@@ -1,0 +1,120 @@
+$ git clone https://github.com/EnzuBR/awful-barenn.git /tmp/barenn-final-27mnssu0/awful-barenn
+Cloning into '/tmp/barenn-final-27mnssu0/awful-barenn'...
+$ git switch --detach v1.3-aps2
+HEAD is now at 6b46a09 Integra os perfis e a reprodução das tags (#18)
+$ git rev-parse HEAD
+6b46a099116b7760e07fe70dcc2a8c039b0cfe4a
+$ git status --porcelain
+$ uname -r
+6.6.114.1-microsoft-standard-WSL2
+$ cat /etc/os-release
+PRETTY_NAME="Ubuntu 24.04 LTS"
+NAME="Ubuntu"
+VERSION_ID="24.04"
+VERSION="24.04 LTS (Noble Numbat)"
+VERSION_CODENAME=noble
+ID=ubuntu
+ID_LIKE=debian
+HOME_URL="https://www.ubuntu.com/"
+SUPPORT_URL="https://help.ubuntu.com/"
+BUG_REPORT_URL="https://bugs.launchpad.net/ubuntu/"
+PRIVACY_POLICY_URL="https://www.ubuntu.com/legal/terms-and-policies/privacy-policy"
+UBUNTU_CODENAME=noble
+LOGO=ubuntu-logo
+$ g++ --version
+g++ (Ubuntu 13.3.0-6ubuntu2~24.04.1) 13.3.0
+Copyright (C) 2023 Free Software Foundation, Inc.
+This is free software; see the source for copying conditions.  There is NO
+warranty; not even for MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
+
+$ /opt/aps2-toolchains/cuda-12.5/bin/nvcc --version
+nvcc: NVIDIA (R) Cuda compiler driver
+Copyright (c) 2005-2024 NVIDIA Corporation
+Built on Wed_Apr_17_19:19:55_PDT_2024
+Cuda compilation tools, release 12.5, V12.5.40
+Build cuda_12.5.r12.5/compiler.34177558_0
+$ sha256sum optdigits.tra optdigits.tes
+e1b683cc211604fe8fd8c4417e6a69f31380e0c61d4af22e93cc21e9257ffedd  optdigits.tra
+6ebb3d2fee246a4e99363262ddf8a00a3c41bee6014c373ed9d9216ba7f651b8  optdigits.tes
+$ g++ -std=c++17 -O2 -g -Wall -Wextra -ffp-contract=off -fopenmp barenn.cpp -o barenn-cpu
+$ /opt/aps2-toolchains/cuda-12.5/bin/nvcc -std=c++17 -arch=sm_86 -O2 -lineinfo --fmad=false -Xcompiler=-ffp-contract=off,-fopenmp -DBARENN_CUDA -x cu barenn.cpp -o barenn-cuda
+OMP_NUM_THREADS=4 OMP_DYNAMIC=FALSE
+$ ./barenn-cpu
+Tempo de leitura 0.039589 s
+TREINO | 3823 imagens
+Epoca  1/51 | perda media 0.4129
+Epoca  6/51 | perda media 0.0442
+Epoca 11/51 | perda media 0.0312
+Epoca 16/51 | perda media 0.0261
+Epoca 21/51 | perda media 0.0227
+Epoca 26/51 | perda media 0.0204
+Epoca 31/51 | perda media 0.0184
+Epoca 36/51 | perda media 0.0169
+Epoca 41/51 | perda media 0.0155
+Epoca 46/51 | perda media 0.0145
+Epoca 51/51 | perda media 0.0135
+Tempo de treino 0.7508 s
+
+AVALIACAO FINAL
+Acuracia 95.5% | 1717 acertos em 1797 imagens
+Perda media 0.0432
+Tempo de inferencia 0.000894 s
+
+ALGUMAS INFERENCIAS
+Esperado  Previsto
+       0         0
+       1         1
+       2         8
+       3         3
+       5         9
+       7         9
+
+CONFUSOES MAIS FREQUENTES
+Esperado  Previsto  Ocorrencias
+       7         9            9
+       8         1            6
+       3         2            5
+Tempo de avaliacao 0.000918 s
+$ ./barenn-cuda
+CUDA H2D 0.001754 s
+CUDA kernels 0.829049 s
+CUDA D2H 0.000694 s
+Tempo de leitura 0.038056 s
+TREINO | 3823 imagens
+Epoca  1/51 | perda media 0.4129
+Epoca  6/51 | perda media 0.0442
+Epoca 11/51 | perda media 0.0312
+Epoca 16/51 | perda media 0.0261
+Epoca 21/51 | perda media 0.0227
+Epoca 26/51 | perda media 0.0204
+Epoca 31/51 | perda media 0.0184
+Epoca 36/51 | perda media 0.0169
+Epoca 41/51 | perda media 0.0155
+Epoca 46/51 | perda media 0.0145
+Epoca 51/51 | perda media 0.0135
+Tempo de treino 1.1483 s
+
+AVALIACAO FINAL
+Acuracia 95.5% | 1717 acertos em 1797 imagens
+Perda media 0.0432
+Tempo de inferencia 0.001604 s
+
+ALGUMAS INFERENCIAS
+Esperado  Previsto
+       0         0
+       1         1
+       2         8
+       3         3
+       5         9
+       7         9
+
+CONFUSOES MAIS FREQUENTES
+Esperado  Previsto  Ocorrencias
+       7         9            9
+       8         1            6
+       3         2            5
+Tempo de avaliacao 0.001632 s
+$ python3 tools/verificar.py ./barenn-cpu ./barenn-cuda --atol 0
+Optdigits: 1717/1797 acertos, perda 0.0432.
+Fixture de zeros: 1/2 acertos, perda 0.2541, confusão 2 -> 7 (1).
+$ git diff --exit-code

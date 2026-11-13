@@ -14,6 +14,16 @@ Mediana ± desvio padrão amostral de nove rodadas alternadas, após um aquecime
 
 A CPU otimizada treinou **1,77× mais rápido** que o legado. O CUDA final reduziu a fase de kernels em **1,95×** frente ao CUDA inicial. Na tabela acima, o menor tempo total foi do executável CUDA, que usou MSVC no host. A CPU usou MinGW. A comparação com o mesmo compilador está abaixo.
 
+### Marcos após o benchmark
+
+| Tag | O que entrou | Issue |
+| --- | --- | --- |
+| [`v1.0-aps2`](https://github.com/EnzuBR/awful-barenn/tree/v1.0-aps2) | Entrega original com resultados, perfis resumidos e comandos. | [#11](https://github.com/EnzuBR/awful-barenn/issues/11) |
+| [`v1.1-mesmo-compilador`](https://github.com/EnzuBR/awful-barenn/tree/v1.1-mesmo-compilador) | Comparação CPU e CUDA com MSVC no host e cronômetros por fase. | [#13](https://github.com/EnzuBR/awful-barenn/issues/13) |
+| [`v1.2-inferencia-openmp`](https://github.com/EnzuBR/awful-barenn/tree/v1.2-inferencia-openmp) | Medição com uma e quatro threads no mesmo binário e ensaio de leitura paralela. | [#14](https://github.com/EnzuBR/awful-barenn/issues/14) |
+| [`v1.3-aps2`](https://github.com/EnzuBR/awful-barenn/tree/v1.3-aps2) | Exportações dos profilers e testes das tags em clone novo. | [#15](https://github.com/EnzuBR/awful-barenn/issues/15) |
+| [`v1.4-reproducao`](https://github.com/EnzuBR/awful-barenn/tree/v1.4-reproducao) | Registro do teste da v1.3 e patch do ensaio de leitura. | [#19](https://github.com/EnzuBR/awful-barenn/issues/19) |
+
 ## CPU e CUDA com o mesmo compilador
 
 Compilei os dois modos com NVCC 12.5.40 e MSVC 19.29 no host. Alterei apenas a macro `BARENN_CUDA`. Usei os mesmos dados e quatro threads na avaliação, com 15 rodadas alternadas e um aquecimento por modo.
@@ -29,7 +39,7 @@ A diferença de leitura ficou dentro da dispersão. Com o host igual, a CPU teve
 
 Com o mesmo executável CPU, quatro threads fizeram a inferência em **1,450 ms** na mediana, ante **2,703 ms** com uma thread. Foram 15 rodadas alternadas, com ganho em 13 delas e a mesma saída numérica em todas. O tempo de ponta a ponta ficou perto de 0,96 s nas duas configurações. A inferência responde por uma fração pequena do total.
 
-Também testei ler treino e teste em paralelo. No MSVC, a mediana da leitura subiu de 159 para 205 ms. Mantive a leitura serial e o OpenMP na avaliação. [Issue #14](https://github.com/EnzuBR/awful-barenn/issues/14) · [Rodadas da inferência](resultados/threads-msvc.txt) · [Ensaio de leitura](resultados/leitura-paralela-msvc.txt).
+Também testei ler treino e teste em paralelo. No MSVC, a mediana da leitura subiu de 159 para 205 ms. Mantive a leitura serial e o OpenMP na avaliação. [Issue #14](https://github.com/EnzuBR/awful-barenn/issues/14) · [Rodadas da inferência](resultados/threads-msvc.txt) · [Como repetir o ensaio de leitura](resultados/leitura-paralela.md).
 
 As cinco versões obtiveram **1.717/1.797 acertos (95,5%)** e perda de teste **0,0432**. A verificação binária em Ubuntu/WSL2, com GCC 13.3 e NVCC 12.5, comparou parâmetros finais, perdas por época e escores de teste. Os resultados coincidiram bit a bit.
 
@@ -73,6 +83,8 @@ python3 tools/bench_openmp.py /tmp/barenn-v0.2.cpp
 ```
 
 O primeiro verificador usa o conjunto completo e um caso analítico com imagens zeradas. O verificador binário baixa um clone novo e compila as seis tags de `v0.1-baseline` a `v1.0-aps2` em uma pasta temporária. Ele roda a `v1.0-aps2` em CPU e CUDA e compara pesos, vieses, perdas e escores. Use `--nvcc` se o compilador CUDA estiver fora do PATH. [Log da comparação binária](resultados/clone-limpo-wsl.txt) · [Builds e execuções dos programas das tags](resultados/tags-sem-instrumentacao.txt).
+
+Também compilei e rodei a `v1.3-aps2` em CPU e CUDA a partir de um clone novo. Os dois modos passaram com os dados completos e com o caso de imagens zeradas. [Comandos, versões e saídas da v1.3](resultados/v1.3-clone-limpo.txt).
 
 O microbenchmark OpenMP mede 100 passagens pelo conjunto de teste com uma equipe por processo. [Rodadas do OpenMP](resultados/openmp-windows.txt).
 
