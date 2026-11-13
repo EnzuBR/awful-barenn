@@ -52,20 +52,31 @@ Ajuste `sm_86` à sua GPU. Para CPU sem OpenMP, omita `-fopenmp`. No Windows, os
 
 ## Como conferir os resultados
 
-Compile cada tag em sua pasta, com os comandos acima, e use o script da `main` com os caminhos dos executáveis. Em Linux/WSL2:
+Em Linux/WSL2, entre na raiz de cada tag e use a linha correspondente. O comando `git switch --detach <tag>` seleciona a versão em um clone de trabalho.
+
+| Tag | Como compilar |
+| --- | --- |
+| `v0.1-baseline` | Comando GCC acima sem `-fopenmp`. |
+| `v0.2-cpu` | Comando GCC acima com `-fopenmp`. |
+| `v0.3-cuda`, `v0.4-cuda-shared`, `v0.5-cuda-padding` | Comando NVCC acima com `-DBARENN_CUDA`. |
+| `v1.0-aps2` e marcos seguintes | GCC para CPU ou NVCC com `-DBARENN_CUDA` para CUDA. |
+
+Use os scripts da `main` com os caminhos dos executáveis.
 
 ```bash
 OMP_NUM_THREADS=4 python3 tools/benchmark.py \
   ./barenn-legado ./barenn-cpu ./barenn-global ./barenn-shared ./barenn-cuda --repeticoes 9
 python3 tools/verificar.py ./barenn-legado ./barenn-cuda --atol 0
-OMP_NUM_THREADS=4 python3 tools/verificar_binario.py --arch sm_86
+python3 tools/verificar_binario.py --clonar https://github.com/EnzuBR/awful-barenn.git --arch sm_86
 git show v0.2-cpu:barenn.cpp > /tmp/barenn-v0.2.cpp
 python3 tools/bench_openmp.py /tmp/barenn-v0.2.cpp
 ```
 
-O primeiro verificador usa o conjunto completo e um caso analítico com imagens zeradas. O verificador binário compila as cinco tags em uma pasta temporária e compara pesos, vieses, perdas e escores. O microbenchmark OpenMP mede 100 passagens pelo conjunto de teste com uma equipe por processo. [Rodadas do OpenMP](resultados/openmp-windows.txt).
+O primeiro verificador usa o conjunto completo e um caso analítico com imagens zeradas. O verificador binário baixa um clone novo e compila as seis tags de `v0.1-baseline` a `v1.0-aps2` em uma pasta temporária. Ele roda a `v1.0-aps2` em CPU e CUDA e compara pesos, vieses, perdas e escores. Use `--nvcc` se o compilador CUDA estiver fora do PATH. [Log da comparação binária](resultados/clone-limpo-wsl.txt) · [Builds e execuções dos programas das tags](resultados/tags-sem-instrumentacao.txt).
 
-As Issues registram a coleta e a análise dos perfis. [Callgrind](resultados/callgrind.csv) · [Nsight Systems](resultados/nsight-systems.csv) · [Nsight Compute](resultados/nsight-compute.csv).
+O microbenchmark OpenMP mede 100 passagens pelo conjunto de teste com uma equipe por processo. [Rodadas do OpenMP](resultados/openmp-windows.txt).
+
+Os perfis trazem os comandos, as versões das ferramentas e os arquivos de saída. [Como repetir as coletas](resultados/perfis/README.md) · [Issue #15](https://github.com/EnzuBR/awful-barenn/issues/15).
 
 ## Enunciado original
 

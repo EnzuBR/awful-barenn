@@ -1,0 +1,328 @@
+$ git clone -- https://github.com/EnzuBR/awful-barenn.git /tmp/barenn-verificacao-2v0c3tq6/clone
+Cloning into '/tmp/barenn-verificacao-2v0c3tq6/clone'...
+$ git -C /tmp/barenn-verificacao-2v0c3tq6/clone rev-parse HEAD
+a51932bcecb958525fc61f6dd9b7d4ab0be5a8d6
+Linux-6.6.114.1-microsoft-standard-WSL2-x86_64-with-glibc2.39
+Ubuntu 24.04 LTS
+OMP_NUM_THREADS=4 OMP_DYNAMIC=FALSE
+$ git --version
+git version 2.43.0
+$ g++ --version
+g++ (Ubuntu 13.3.0-6ubuntu2~24.04.1) 13.3.0
+Copyright (C) 2023 Free Software Foundation, Inc.
+This is free software; see the source for copying conditions.  There is NO
+warranty; not even for MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
+
+$ /opt/aps2-toolchains/cuda-12.5/bin/nvcc --version
+nvcc: NVIDIA (R) Cuda compiler driver
+Copyright (c) 2005-2024 NVIDIA Corporation
+Built on Wed_Apr_17_19:19:55_PDT_2024
+Cuda compilation tools, release 12.5, V12.5.40
+Build cuda_12.5.r12.5/compiler.34177558_0
+optdigits.tra: SHA-256 e1b683cc211604fe8fd8c4417e6a69f31380e0c61d4af22e93cc21e9257ffedd
+optdigits.tes: SHA-256 6ebb3d2fee246a4e99363262ddf8a00a3c41bee6014c373ed9d9216ba7f651b8
+
+v0.1-baseline (CPU) | 049aebcf40a2d340ba98bc891ea517750bacb571
+$ g++ -std=c++17 -O2 -ffp-contract=off /tmp/barenn-verificacao-2v0c3tq6/v0.1-baseline-CPU/barenn.cpp -o /tmp/barenn-verificacao-2v0c3tq6/v0.1-baseline-CPU/barenn
+$ /tmp/barenn-verificacao-2v0c3tq6/v0.1-baseline-CPU/barenn /tmp/barenn-verificacao-2v0c3tq6/optdigits.tra /tmp/barenn-verificacao-2v0c3tq6/optdigits.tes /tmp/barenn-verificacao-2v0c3tq6/v0.1-baseline-CPU/resultado.bin
+TREINO | 3823 imagens
+Epoca  1/51 | perda media 0.4129
+Epoca  6/51 | perda media 0.0442
+Epoca 11/51 | perda media 0.0312
+Epoca 16/51 | perda media 0.0261
+Epoca 21/51 | perda media 0.0227
+Epoca 26/51 | perda media 0.0204
+Epoca 31/51 | perda media 0.0184
+Epoca 36/51 | perda media 0.0169
+Epoca 41/51 | perda media 0.0155
+Epoca 46/51 | perda media 0.0145
+Epoca 51/51 | perda media 0.0135
+Tempo de treino 0.9949 s
+
+AVALIACAO FINAL
+Acuracia 95.5% | 1717 acertos em 1797 imagens
+Perda media 0.0432
+
+ALGUMAS INFERENCIAS
+Esperado  Previsto
+       0         0
+       1         1
+       2         8
+       3         3
+       5         9
+       7         9
+
+CONFUSOES MAIS FREQUENTES
+Esperado  Previsto  Ocorrencias
+       7         9            9
+       8         1            6
+       3         2            5
+  SHA-256 do resultado (83400 bytes) 63e3ec393f7a8c16d6ff887559ec9bb871f17cdd5ddbe50fb5b9e04f5c3481ab
+  SHA-256 de parâmetros 274b4dff30937164e69b25d25f743dc80dd2ac46a7070c42e5e1730224b76d5a
+  SHA-256 de perdas f794d0dff94b722c4274246547b3264ac0449dd2f492e3660457575442c9c1cb
+  SHA-256 de escores 82f246efdcc5efe311f0ef539a7af71dc7bcaa1e7624aa51e2421262dbd12201
+  Referência gravada.
+
+v0.2-cpu (CPU) | 76f62efcfb0aa375d4f2ce4b0a564857085c2adf
+$ g++ -std=c++17 -O2 -ffp-contract=off -fopenmp /tmp/barenn-verificacao-2v0c3tq6/v0.2-cpu-CPU/barenn.cpp -o /tmp/barenn-verificacao-2v0c3tq6/v0.2-cpu-CPU/barenn
+$ /tmp/barenn-verificacao-2v0c3tq6/v0.2-cpu-CPU/barenn /tmp/barenn-verificacao-2v0c3tq6/optdigits.tra /tmp/barenn-verificacao-2v0c3tq6/optdigits.tes /tmp/barenn-verificacao-2v0c3tq6/v0.2-cpu-CPU/resultado.bin
+TREINO | 3823 imagens
+Epoca  1/51 | perda media 0.4129
+Epoca  6/51 | perda media 0.0442
+Epoca 11/51 | perda media 0.0312
+Epoca 16/51 | perda media 0.0261
+Epoca 21/51 | perda media 0.0227
+Epoca 26/51 | perda media 0.0204
+Epoca 31/51 | perda media 0.0184
+Epoca 36/51 | perda media 0.0169
+Epoca 41/51 | perda media 0.0155
+Epoca 46/51 | perda media 0.0145
+Epoca 51/51 | perda media 0.0135
+Tempo de treino 0.7680 s
+
+AVALIACAO FINAL
+Acuracia 95.5% | 1717 acertos em 1797 imagens
+Perda media 0.0432
+Tempo de inferencia 0.001156 s
+
+ALGUMAS INFERENCIAS
+Esperado  Previsto
+       0         0
+       1         1
+       2         8
+       3         3
+       5         9
+       7         9
+
+CONFUSOES MAIS FREQUENTES
+Esperado  Previsto  Ocorrencias
+       7         9            9
+       8         1            6
+       3         2            5
+  SHA-256 do resultado (83400 bytes) 63e3ec393f7a8c16d6ff887559ec9bb871f17cdd5ddbe50fb5b9e04f5c3481ab
+  SHA-256 de parâmetros 274b4dff30937164e69b25d25f743dc80dd2ac46a7070c42e5e1730224b76d5a
+  SHA-256 de perdas f794d0dff94b722c4274246547b3264ac0449dd2f492e3660457575442c9c1cb
+  SHA-256 de escores 82f246efdcc5efe311f0ef539a7af71dc7bcaa1e7624aa51e2421262dbd12201
+  Idêntica à referência: 2.778 parâmetros, 51 perdas e 17.970 escores.
+
+v0.3-cuda (CUDA) | 9c6cce268179fd3329e7900863a5a99b5c974f23
+$ /opt/aps2-toolchains/cuda-12.5/bin/nvcc -ccbin g++ -std=c++17 -O2 -arch=sm_86 --fmad=false -Xcompiler=-ffp-contract=off,-fopenmp -DBARENN_CUDA /tmp/barenn-verificacao-2v0c3tq6/v0.3-cuda-CUDA/barenn.cu -o /tmp/barenn-verificacao-2v0c3tq6/v0.3-cuda-CUDA/barenn
+$ /tmp/barenn-verificacao-2v0c3tq6/v0.3-cuda-CUDA/barenn /tmp/barenn-verificacao-2v0c3tq6/optdigits.tra /tmp/barenn-verificacao-2v0c3tq6/optdigits.tes /tmp/barenn-verificacao-2v0c3tq6/v0.3-cuda-CUDA/resultado.bin
+CUDA H2D 0.001349 s
+CUDA kernels 1.480518 s
+CUDA D2H 0.000635 s
+TREINO | 3823 imagens
+Epoca  1/51 | perda media 0.4129
+Epoca  6/51 | perda media 0.0442
+Epoca 11/51 | perda media 0.0312
+Epoca 16/51 | perda media 0.0261
+Epoca 21/51 | perda media 0.0227
+Epoca 26/51 | perda media 0.0204
+Epoca 31/51 | perda media 0.0184
+Epoca 36/51 | perda media 0.0169
+Epoca 41/51 | perda media 0.0155
+Epoca 46/51 | perda media 0.0145
+Epoca 51/51 | perda media 0.0135
+Tempo de treino 1.7120 s
+
+AVALIACAO FINAL
+Acuracia 95.5% | 1717 acertos em 1797 imagens
+Perda media 0.0432
+Tempo de inferencia 0.002469 s
+
+ALGUMAS INFERENCIAS
+Esperado  Previsto
+       0         0
+       1         1
+       2         8
+       3         3
+       5         9
+       7         9
+
+CONFUSOES MAIS FREQUENTES
+Esperado  Previsto  Ocorrencias
+       7         9            9
+       8         1            6
+       3         2            5
+  SHA-256 do resultado (83400 bytes) 63e3ec393f7a8c16d6ff887559ec9bb871f17cdd5ddbe50fb5b9e04f5c3481ab
+  SHA-256 de parâmetros 274b4dff30937164e69b25d25f743dc80dd2ac46a7070c42e5e1730224b76d5a
+  SHA-256 de perdas f794d0dff94b722c4274246547b3264ac0449dd2f492e3660457575442c9c1cb
+  SHA-256 de escores 82f246efdcc5efe311f0ef539a7af71dc7bcaa1e7624aa51e2421262dbd12201
+  Idêntica à referência: 2.778 parâmetros, 51 perdas e 17.970 escores.
+
+v0.4-cuda-shared (CUDA) | 0cb5b091f1265200e01d87eadde1f83d717e30ff
+$ /opt/aps2-toolchains/cuda-12.5/bin/nvcc -ccbin g++ -std=c++17 -O2 -arch=sm_86 --fmad=false -Xcompiler=-ffp-contract=off,-fopenmp -DBARENN_CUDA /tmp/barenn-verificacao-2v0c3tq6/v0.4-cuda-shared-CUDA/barenn.cu -o /tmp/barenn-verificacao-2v0c3tq6/v0.4-cuda-shared-CUDA/barenn
+$ /tmp/barenn-verificacao-2v0c3tq6/v0.4-cuda-shared-CUDA/barenn /tmp/barenn-verificacao-2v0c3tq6/optdigits.tra /tmp/barenn-verificacao-2v0c3tq6/optdigits.tes /tmp/barenn-verificacao-2v0c3tq6/v0.4-cuda-shared-CUDA/resultado.bin
+CUDA H2D 0.000486 s
+CUDA kernels 1.035337 s
+CUDA D2H 0.000290 s
+TREINO | 3823 imagens
+Epoca  1/51 | perda media 0.4129
+Epoca  6/51 | perda media 0.0442
+Epoca 11/51 | perda media 0.0312
+Epoca 16/51 | perda media 0.0261
+Epoca 21/51 | perda media 0.0227
+Epoca 26/51 | perda media 0.0204
+Epoca 31/51 | perda media 0.0184
+Epoca 36/51 | perda media 0.0169
+Epoca 41/51 | perda media 0.0155
+Epoca 46/51 | perda media 0.0145
+Epoca 51/51 | perda media 0.0135
+Tempo de treino 1.2060 s
+
+AVALIACAO FINAL
+Acuracia 95.5% | 1717 acertos em 1797 imagens
+Perda media 0.0432
+Tempo de inferencia 0.006763 s
+
+ALGUMAS INFERENCIAS
+Esperado  Previsto
+       0         0
+       1         1
+       2         8
+       3         3
+       5         9
+       7         9
+
+CONFUSOES MAIS FREQUENTES
+Esperado  Previsto  Ocorrencias
+       7         9            9
+       8         1            6
+       3         2            5
+  SHA-256 do resultado (83400 bytes) 63e3ec393f7a8c16d6ff887559ec9bb871f17cdd5ddbe50fb5b9e04f5c3481ab
+  SHA-256 de parâmetros 274b4dff30937164e69b25d25f743dc80dd2ac46a7070c42e5e1730224b76d5a
+  SHA-256 de perdas f794d0dff94b722c4274246547b3264ac0449dd2f492e3660457575442c9c1cb
+  SHA-256 de escores 82f246efdcc5efe311f0ef539a7af71dc7bcaa1e7624aa51e2421262dbd12201
+  Idêntica à referência: 2.778 parâmetros, 51 perdas e 17.970 escores.
+
+v0.5-cuda-padding (CUDA) | f7da50c91be18204a36b84926ce5387b1c7fb78e
+$ /opt/aps2-toolchains/cuda-12.5/bin/nvcc -ccbin g++ -std=c++17 -O2 -arch=sm_86 --fmad=false -Xcompiler=-ffp-contract=off,-fopenmp -DBARENN_CUDA /tmp/barenn-verificacao-2v0c3tq6/v0.5-cuda-padding-CUDA/barenn.cu -o /tmp/barenn-verificacao-2v0c3tq6/v0.5-cuda-padding-CUDA/barenn
+$ /tmp/barenn-verificacao-2v0c3tq6/v0.5-cuda-padding-CUDA/barenn /tmp/barenn-verificacao-2v0c3tq6/optdigits.tra /tmp/barenn-verificacao-2v0c3tq6/optdigits.tes /tmp/barenn-verificacao-2v0c3tq6/v0.5-cuda-padding-CUDA/resultado.bin
+CUDA H2D 0.000853 s
+CUDA kernels 0.797568 s
+CUDA D2H 0.000478 s
+TREINO | 3823 imagens
+Epoca  1/51 | perda media 0.4129
+Epoca  6/51 | perda media 0.0442
+Epoca 11/51 | perda media 0.0312
+Epoca 16/51 | perda media 0.0261
+Epoca 21/51 | perda media 0.0227
+Epoca 26/51 | perda media 0.0204
+Epoca 31/51 | perda media 0.0184
+Epoca 36/51 | perda media 0.0169
+Epoca 41/51 | perda media 0.0155
+Epoca 46/51 | perda media 0.0145
+Epoca 51/51 | perda media 0.0135
+Tempo de treino 0.9828 s
+
+AVALIACAO FINAL
+Acuracia 95.5% | 1717 acertos em 1797 imagens
+Perda media 0.0432
+Tempo de inferencia 0.000912 s
+
+ALGUMAS INFERENCIAS
+Esperado  Previsto
+       0         0
+       1         1
+       2         8
+       3         3
+       5         9
+       7         9
+
+CONFUSOES MAIS FREQUENTES
+Esperado  Previsto  Ocorrencias
+       7         9            9
+       8         1            6
+       3         2            5
+  SHA-256 do resultado (83400 bytes) 63e3ec393f7a8c16d6ff887559ec9bb871f17cdd5ddbe50fb5b9e04f5c3481ab
+  SHA-256 de parâmetros 274b4dff30937164e69b25d25f743dc80dd2ac46a7070c42e5e1730224b76d5a
+  SHA-256 de perdas f794d0dff94b722c4274246547b3264ac0449dd2f492e3660457575442c9c1cb
+  SHA-256 de escores 82f246efdcc5efe311f0ef539a7af71dc7bcaa1e7624aa51e2421262dbd12201
+  Idêntica à referência: 2.778 parâmetros, 51 perdas e 17.970 escores.
+
+v1.0-aps2 (CUDA) | a51932bcecb958525fc61f6dd9b7d4ab0be5a8d6
+$ /opt/aps2-toolchains/cuda-12.5/bin/nvcc -ccbin g++ -std=c++17 -O2 -arch=sm_86 --fmad=false -Xcompiler=-ffp-contract=off,-fopenmp -DBARENN_CUDA /tmp/barenn-verificacao-2v0c3tq6/v1.0-aps2-CUDA/barenn.cu -o /tmp/barenn-verificacao-2v0c3tq6/v1.0-aps2-CUDA/barenn
+$ /tmp/barenn-verificacao-2v0c3tq6/v1.0-aps2-CUDA/barenn /tmp/barenn-verificacao-2v0c3tq6/optdigits.tra /tmp/barenn-verificacao-2v0c3tq6/optdigits.tes /tmp/barenn-verificacao-2v0c3tq6/v1.0-aps2-CUDA/resultado.bin
+CUDA H2D 0.000492 s
+CUDA kernels 0.826691 s
+CUDA D2H 0.000361 s
+TREINO | 3823 imagens
+Epoca  1/51 | perda media 0.4129
+Epoca  6/51 | perda media 0.0442
+Epoca 11/51 | perda media 0.0312
+Epoca 16/51 | perda media 0.0261
+Epoca 21/51 | perda media 0.0227
+Epoca 26/51 | perda media 0.0204
+Epoca 31/51 | perda media 0.0184
+Epoca 36/51 | perda media 0.0169
+Epoca 41/51 | perda media 0.0155
+Epoca 46/51 | perda media 0.0145
+Epoca 51/51 | perda media 0.0135
+Tempo de treino 0.9939 s
+
+AVALIACAO FINAL
+Acuracia 95.5% | 1717 acertos em 1797 imagens
+Perda media 0.0432
+Tempo de inferencia 0.001306 s
+
+ALGUMAS INFERENCIAS
+Esperado  Previsto
+       0         0
+       1         1
+       2         8
+       3         3
+       5         9
+       7         9
+
+CONFUSOES MAIS FREQUENTES
+Esperado  Previsto  Ocorrencias
+       7         9            9
+       8         1            6
+       3         2            5
+  SHA-256 do resultado (83400 bytes) 63e3ec393f7a8c16d6ff887559ec9bb871f17cdd5ddbe50fb5b9e04f5c3481ab
+  SHA-256 de parâmetros 274b4dff30937164e69b25d25f743dc80dd2ac46a7070c42e5e1730224b76d5a
+  SHA-256 de perdas f794d0dff94b722c4274246547b3264ac0449dd2f492e3660457575442c9c1cb
+  SHA-256 de escores 82f246efdcc5efe311f0ef539a7af71dc7bcaa1e7624aa51e2421262dbd12201
+  Idêntica à referência: 2.778 parâmetros, 51 perdas e 17.970 escores.
+
+v1.0-aps2 (CPU) | a51932bcecb958525fc61f6dd9b7d4ab0be5a8d6
+$ g++ -std=c++17 -O2 -ffp-contract=off -fopenmp /tmp/barenn-verificacao-2v0c3tq6/v1.0-aps2-CPU/barenn.cpp -o /tmp/barenn-verificacao-2v0c3tq6/v1.0-aps2-CPU/barenn
+$ /tmp/barenn-verificacao-2v0c3tq6/v1.0-aps2-CPU/barenn /tmp/barenn-verificacao-2v0c3tq6/optdigits.tra /tmp/barenn-verificacao-2v0c3tq6/optdigits.tes /tmp/barenn-verificacao-2v0c3tq6/v1.0-aps2-CPU/resultado.bin
+TREINO | 3823 imagens
+Epoca  1/51 | perda media 0.4129
+Epoca  6/51 | perda media 0.0442
+Epoca 11/51 | perda media 0.0312
+Epoca 16/51 | perda media 0.0261
+Epoca 21/51 | perda media 0.0227
+Epoca 26/51 | perda media 0.0204
+Epoca 31/51 | perda media 0.0184
+Epoca 36/51 | perda media 0.0169
+Epoca 41/51 | perda media 0.0155
+Epoca 46/51 | perda media 0.0145
+Epoca 51/51 | perda media 0.0135
+Tempo de treino 0.8886 s
+
+AVALIACAO FINAL
+Acuracia 95.5% | 1717 acertos em 1797 imagens
+Perda media 0.0432
+Tempo de inferencia 0.001137 s
+
+ALGUMAS INFERENCIAS
+Esperado  Previsto
+       0         0
+       1         1
+       2         8
+       3         3
+       5         9
+       7         9
+
+CONFUSOES MAIS FREQUENTES
+Esperado  Previsto  Ocorrencias
+       7         9            9
+       8         1            6
+       3         2            5
+  SHA-256 do resultado (83400 bytes) 63e3ec393f7a8c16d6ff887559ec9bb871f17cdd5ddbe50fb5b9e04f5c3481ab
+  SHA-256 de parâmetros 274b4dff30937164e69b25d25f743dc80dd2ac46a7070c42e5e1730224b76d5a
+  SHA-256 de perdas f794d0dff94b722c4274246547b3264ac0449dd2f492e3660457575442c9c1cb
+  SHA-256 de escores 82f246efdcc5efe311f0ef539a7af71dc7bcaa1e7624aa51e2421262dbd12201
+  Idêntica à referência: 2.778 parâmetros, 51 perdas e 17.970 escores.

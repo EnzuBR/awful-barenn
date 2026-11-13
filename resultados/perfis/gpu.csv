@@ -1,0 +1,2 @@
+gpu,largura_banda_nominal_bytes_s,clock_declarado_hz,sms,cc_major,cc_minor,threads_por_warp,warps_max_por_sm,shared_max_por_sm_bytes
+NVIDIA GeForce RTX 3070 Ti Laptop GPU,384064000000,1035000000,46,8,6,32,48,102400
