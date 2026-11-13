@@ -25,6 +25,12 @@ Compilei os dois modos com NVCC 12.5.40 e MSVC 19.29 no host. Alterei apenas a m
 
 A diferença de leitura ficou dentro da dispersão. Com o host igual, a CPU teve menor mediana de treino e de ponta a ponta. O SGD usa os pesos atualizados na amostra anterior. Um único bloco fica ativo por lançamento, e as barreiras entre operações das camadas limitam o trabalho que a GPU consegue sobrepor. [Issue #13](https://github.com/EnzuBR/awful-barenn/issues/13) · [Tempos por rodada](resultados/mesmo-compilador-windows.txt).
 
+## Uma passagem com OpenMP
+
+Com o mesmo executável CPU, quatro threads fizeram a inferência em **1,450 ms** na mediana, ante **2,703 ms** com uma thread. Foram 15 rodadas alternadas, com ganho em 13 delas e a mesma saída numérica em todas. O tempo de ponta a ponta ficou perto de 0,96 s nas duas configurações. A inferência responde por uma fração pequena do total.
+
+Também testei ler treino e teste em paralelo. No MSVC, a mediana da leitura subiu de 159 para 205 ms. Mantive a leitura serial e o OpenMP na avaliação. [Issue #14](https://github.com/EnzuBR/awful-barenn/issues/14) · [Rodadas da inferência](resultados/threads-msvc.txt) · [Ensaio de leitura](resultados/leitura-paralela-msvc.txt).
+
 As cinco versões obtiveram **1.717/1.797 acertos (95,5%)** e perda de teste **0,0432**. A verificação binária em Ubuntu/WSL2, com GCC 13.3 e NVCC 12.5, comparou parâmetros finais, perdas por época e escores de teste. Os resultados coincidiram bit a bit.
 
 ## Como executar
