@@ -1,0 +1,53 @@
+--- a/barenn.cpp
++++ b/barenn.cpp
+@@ -4,6 +4,7 @@
+ #include <cmath>
+ #include <cstddef>
+ #include <cstdlib>
++#include <exception>
+ #include <filesystem>
+ #include <fstream>
+ #include <iomanip>
+@@ -135,6 +136,32 @@
+     return dados;
+ }
+
++// Os arquivos podem ser lidos em paralelo. Relata os erros na ordem dos argumentos.
++array<vector<Amostra>, 2> ler_conjuntos(const string& arquivo_treino, const string& arquivo_teste) {
++#ifdef _OPENMP
++    if (omp_get_max_threads() > 1) {
++        const array<const string*, 2> caminhos{&arquivo_treino, &arquivo_teste};
++        array<vector<Amostra>, 2> conjuntos;
++        array<exception_ptr, 2> erros{};
++        #pragma omp parallel for num_threads(2) schedule(static)
++        for (int i = 0; i < 2; ++i) {
++            try {
++                conjuntos[i] = ler_dados(*caminhos[i]);
++            } catch (...) {
++                erros[i] = current_exception();
++            }
++        }
++        for (const auto& erro : erros) {
++            if (erro) {
++                rethrow_exception(erro);
++            }
++        }
++        return conjuntos;
++    }
++#endif
++    return {ler_dados(arquivo_treino), ler_dados(arquivo_teste)};
++}
++
+ // Calcula metade da soma dos erros quadráticos. O alvo vale 1 para a
+ // classe correta e 0 para as demais. O erro também é a derivada por escore.
+ float perda(const float* escores, int rotulo, float* gradiente = nullptr) {
+@@ -265,8 +292,7 @@
+
+     try {
+         const auto inicio_leitura = chrono::steady_clock::now();
+-        const auto treino = Barenn::ler_dados(arquivo_treino);
+-        const auto teste = Barenn::ler_dados(arquivo_teste);
++        const auto [treino, teste] = Barenn::ler_conjuntos(arquivo_treino, arquivo_teste);
+         if (filesystem::equivalent(arquivo_treino, arquivo_teste)) {
+             throw runtime_error("Use arquivos distintos para treino e teste.");
+         }

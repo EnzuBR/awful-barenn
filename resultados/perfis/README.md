@@ -45,6 +45,8 @@ Use um terminal elevado se o driver restringir o acesso aos contadores. O profil
 
 Os logs `ncu-*.txt` preservam a saída e a tabela CSV da coleta. A instrumentação do Nsight Compute altera a duração da execução. A comparação de desempenho usa as rodadas sem profiler e o Nsight Systems para separar kernels e cópias. Nos logs de GPU, `<FERRAMENTAS>` substitui o caminho local de instalação e trabalho.
 
+Os arquivos `.nsys-rep` e `.ncu-rep` ficam locais porque guardam metadados da máquina e caminhos de arquivos. Os comandos acima geram esses relatórios para abrir no Nsight. As tabelas exportadas e os registros de todos os lançamentos e cópias estão nesta pasta.
+
 ### O que limita o kernel
 
 Cada amostra faz cerca de 15.148 operações FP32 úteis. São 5.440 no forward, 1.344 nos gradientes de entrada usados, 8.160 nas atualizações de pesos, 116 nas atualizações de vieses, 48 na derivada da ReLU e 40 na perda. No lote de 128 amostras, isso dá 1.938.944 operações.
