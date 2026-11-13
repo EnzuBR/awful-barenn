@@ -133,16 +133,33 @@ __device__ void backward(Camada<Entradas, Saidas>& camada, const float* entrada,
     __syncthreads();
 }
 
-static __global__ void treinar_lote(Modelo* modelo, Intermediarios* temporarios,
+template <int Entradas, int Saidas>
+__device__ void copiar_camada(const Camada<Entradas, Saidas>& origem,
+                              Camada<Entradas, Saidas>& destino) {
+    int tid = threadIdx.x;
+    for (int i = tid; i < Entradas * Saidas; i += blockDim.x) {
+        destino.pesos[i] = origem.pesos[i];
+    }
+    if (tid < Saidas) {
+        destino.vieses[tid] = origem.vieses[tid];
+    }
+}
+
+static __global__ void treinar_lote(Modelo* modelo,
                                     const Exemplo* exemplos, float* perdas,
                                     int quantidade, float taxa) {
-    auto& estado = *temporarios;
+    __shared__ Modelo local;
+    __shared__ Intermediarios estado;
+    copiar_camada<64, 32>(modelo->l1, local.l1);
+    copiar_camada<32, 16>(modelo->l2, local.l2);
+    copiar_camada<16, 10>(modelo->l3, local.l3);
+    __syncthreads();
     // As amostras seguem em série. As operações de cada camada usam o bloco.
     for (int n = 0; n < quantidade; ++n) {
         const Exemplo& exemplo = exemplos[n];
-        forward<false>(modelo->l1, exemplo.imagem, estado.saida1);
-        forward<false>(modelo->l2, estado.saida1, estado.saida2);
-        forward<true>(modelo->l3, estado.saida2, estado.escores);
+        forward<false>(local.l1, exemplo.imagem, estado.saida1);
+        forward<false>(local.l2, estado.saida1, estado.saida2);
+        forward<true>(local.l3, estado.saida2, estado.escores);
 
         if (threadIdx.x == 0) {
             float perda = 0.0f;
@@ -155,13 +172,16 @@ static __global__ void treinar_lote(Modelo* modelo, Intermediarios* temporarios,
         }
         __syncthreads();
 
-        backward<true, true>(modelo->l3, estado.saida2, estado.escores,
+        backward<true, true>(local.l3, estado.saida2, estado.escores,
                              estado.gradiente3, estado.gradiente2, estado.delta, taxa);
-        backward<false, true>(modelo->l2, estado.saida1, estado.saida2,
+        backward<false, true>(local.l2, estado.saida1, estado.saida2,
                               estado.gradiente2, estado.gradiente1, estado.delta, taxa);
-        backward<false, false>(modelo->l1, exemplo.imagem, estado.saida1,
+        backward<false, false>(local.l1, exemplo.imagem, estado.saida1,
                                 estado.gradiente1, nullptr, estado.delta, taxa);
     }
+    copiar_camada<64, 32>(local.l1, modelo->l1);
+    copiar_camada<32, 16>(local.l2, modelo->l2);
+    copiar_camada<16, 10>(local.l3, modelo->l3);
 }
 
 template <int Entradas, int Saidas>
@@ -194,7 +214,6 @@ void treinar_cuda(const vector<Amostra>& treino, DenseLayer& l1, DenseLayer& l2,
     vector<float> perdas_amostras(Epocas * treino.size());
 
     gpu::Buffer<gpu::Modelo> d_modelo(1);
-    gpu::Buffer<gpu::Intermediarios> d_intermediarios(1);
     gpu::Buffer<gpu::Exemplo> d_exemplos(exemplos.size());
     gpu::Buffer<float> d_perdas(perdas_amostras.size());
     gpu::Evento inicio, depois_envio, depois_kernels, depois_retorno;
@@ -210,7 +229,7 @@ void treinar_cuda(const vector<Amostra>& treino, DenseLayer& l1, DenseLayer& l2,
         for (size_t i = 0; i < exemplos.size(); i += amostras_por_lote) {
             int quantidade = static_cast<int>(min<size_t>(amostras_por_lote, exemplos.size() - i));
             gpu::treinar_lote<<<1, threads>>>(
-                d_modelo.dados(), d_intermediarios.dados(), d_exemplos.dados() + i,
+                d_modelo.dados(), d_exemplos.dados() + i,
                 d_perdas.dados() + epoca * exemplos.size() + i, quantidade, taxa);
             gpu::verificar(cudaGetLastError(), "treinar_lote");
         }
