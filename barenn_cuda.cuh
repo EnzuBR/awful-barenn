@@ -60,16 +60,17 @@ private:
     cudaEvent_t evento = nullptr;
 };
 
-template <int Entradas, int Saidas>
+template <int Entradas, int Saidas, int Passo = Entradas>
 struct Camada {
-    float pesos[Entradas * Saidas];
+    float pesos[Passo * Saidas];
     float vieses[Saidas];
 };
 
+template <int Padding = 0>
 struct Modelo {
-    Camada<64, 32> l1;
-    Camada<32, 16> l2;
-    Camada<16, 10> l3;
+    Camada<64, 32, 64 + Padding> l1;
+    Camada<32, 16, 32 + Padding> l2;
+    Camada<16, 10, 16 + Padding> l3;
 };
 
 struct Exemplo {
@@ -87,22 +88,22 @@ struct Intermediarios {
     float delta[32];
 };
 
-template <bool Final, int Entradas, int Saidas>
-__device__ void forward(const Camada<Entradas, Saidas>& camada,
+template <bool Final, int Entradas, int Saidas, int Passo>
+__device__ void forward(const Camada<Entradas, Saidas, Passo>& camada,
                         const float* entrada, float* saida) {
     int i = threadIdx.x;
     if (i < Saidas) {
         float soma = camada.vieses[i];
         for (int j = 0; j < Entradas; ++j) {
-            soma += entrada[j] * camada.pesos[i * Entradas + j];
+            soma += entrada[j] * camada.pesos[i * Passo + j];
         }
         saida[i] = Final || soma > 0.0f ? soma : 0.0f;
     }
     __syncthreads();
 }
 
-template <bool Final, bool CalcularEntrada, int Entradas, int Saidas>
-__device__ void backward(Camada<Entradas, Saidas>& camada, const float* entrada,
+template <bool Final, bool CalcularEntrada, int Entradas, int Saidas, int Passo>
+__device__ void backward(Camada<Entradas, Saidas, Passo>& camada, const float* entrada,
                          const float* saida, const float* grad_saida,
                          float* grad_entrada, float* delta, float taxa) {
     int tid = threadIdx.x;
@@ -116,7 +117,7 @@ __device__ void backward(Camada<Entradas, Saidas>& camada, const float* entrada,
         if (tid < Entradas) {
             float soma = 0.0f;
             for (int j = 0; j < Saidas; ++j) {
-                soma += delta[j] * camada.pesos[j * Entradas + tid];
+                soma += delta[j] * camada.pesos[j * Passo + tid];
             }
             grad_entrada[tid] = soma;
         }
@@ -125,7 +126,9 @@ __device__ void backward(Camada<Entradas, Saidas>& camada, const float* entrada,
     }
 
     for (int i = tid; i < Entradas * Saidas; i += blockDim.x) {
-        camada.pesos[i] -= taxa * (delta[i / Entradas] * entrada[i % Entradas]);
+        const int linha = i / Entradas;
+        const int coluna = i % Entradas;
+        camada.pesos[linha * Passo + coluna] -= taxa * (delta[linha] * entrada[coluna]);
     }
     if (tid < Saidas) {
         camada.vieses[tid] -= taxa * delta[tid];
@@ -133,22 +136,25 @@ __device__ void backward(Camada<Entradas, Saidas>& camada, const float* entrada,
     __syncthreads();
 }
 
-template <int Entradas, int Saidas>
-__device__ void copiar_camada(const Camada<Entradas, Saidas>& origem,
-                              Camada<Entradas, Saidas>& destino) {
+template <int Entradas, int Saidas, int PassoOrigem, int PassoDestino>
+__device__ void copiar_camada(const Camada<Entradas, Saidas, PassoOrigem>& origem,
+                              Camada<Entradas, Saidas, PassoDestino>& destino) {
     int tid = threadIdx.x;
     for (int i = tid; i < Entradas * Saidas; i += blockDim.x) {
-        destino.pesos[i] = origem.pesos[i];
+        const int linha = i / Entradas;
+        const int coluna = i % Entradas;
+        destino.pesos[linha * PassoDestino + coluna] = origem.pesos[linha * PassoOrigem + coluna];
     }
     if (tid < Saidas) {
         destino.vieses[tid] = origem.vieses[tid];
     }
 }
 
-static __global__ void treinar_lote(Modelo* modelo,
+static __global__ void treinar_lote(Modelo<>* modelo,
                                     const Exemplo* exemplos, float* perdas,
                                     int quantidade, float taxa) {
-    __shared__ Modelo local;
+    // Cada linha ocupa um banco diferente quando o forward lê uma coluna.
+    __shared__ Modelo<1> local;
     __shared__ Intermediarios estado;
     copiar_camada<64, 32>(modelo->l1, local.l1);
     copiar_camada<32, 16>(modelo->l2, local.l2);
@@ -201,7 +207,7 @@ void copiar_para_host(const Camada<Entradas, Saidas>& camada, DenseLayer& host) 
 template <size_t Epocas>
 void treinar_cuda(const vector<Amostra>& treino, DenseLayer& l1, DenseLayer& l2,
                   DenseLayer& l3, array<double, Epocas>& perdas, float taxa) {
-    gpu::Modelo modelo;
+    gpu::Modelo<> modelo;
     gpu::copiar_para_modelo(l1, modelo.l1);
     gpu::copiar_para_modelo(l2, modelo.l2);
     gpu::copiar_para_modelo(l3, modelo.l3);
@@ -213,7 +219,7 @@ void treinar_cuda(const vector<Amostra>& treino, DenseLayer& l1, DenseLayer& l2,
     }
     vector<float> perdas_amostras(Epocas * treino.size());
 
-    gpu::Buffer<gpu::Modelo> d_modelo(1);
+    gpu::Buffer<gpu::Modelo<>> d_modelo(1);
     gpu::Buffer<gpu::Exemplo> d_exemplos(exemplos.size());
     gpu::Buffer<float> d_perdas(perdas_amostras.size());
     gpu::Evento inicio, depois_envio, depois_kernels, depois_retorno;
