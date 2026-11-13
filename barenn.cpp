@@ -2,6 +2,7 @@
 #include <array>
 #include <chrono>
 #include <cmath>
+#include <cstddef>
 #include <cstdlib>
 #include <filesystem>
 #include <fstream>
@@ -164,7 +165,7 @@ void avaliar(const DenseLayer& l1, const DenseLayer& l2, const DenseLayer& l3,
 #ifdef _OPENMP
     #pragma omp parallel for num_threads(threads) schedule(static)
 #endif
-    for (size_t i = 0; i < teste.size(); ++i) {
+    for (ptrdiff_t i = 0; i < static_cast<ptrdiff_t>(teste.size()); ++i) {
         const auto& amostra = teste[i];
         array<float, oculta1> a1;
         array<float, oculta2> a2;
@@ -250,6 +251,10 @@ void avaliar(const DenseLayer& l1, const DenseLayer& l2, const DenseLayer& l3,
 
 } // namespace Barenn
 
+#ifdef BARENN_CUDA
+#include "barenn_cuda.cuh"
+#endif
+
 int main(int argc, char** argv) {
     if (argc != 1 && argc != 3) {
         cerr << "Uso: " << argv[0] << " [arquivo_treino arquivo_teste]\n";
@@ -271,13 +276,17 @@ int main(int argc, char** argv) {
         Barenn::DenseLayer l1(Barenn::entradas, Barenn::oculta1);
         Barenn::DenseLayer l2(Barenn::oculta1, Barenn::oculta2);
         Barenn::DenseLayer l3(Barenn::oculta2, Barenn::classes, true);
+        array<double, epocas> perdas{};
+
+#ifndef BARENN_CUDA
         array<float, Barenn::oculta1> a1, z1, grad2;
         array<float, Barenn::oculta2> a2, z2, grad3;
         array<float, Barenn::classes> escores, gradiente;
-        array<double, epocas> perdas{};
-
-        // A medição inclui forward, perda e backward de todas as épocas.
+#endif
         const auto inicio = chrono::steady_clock::now();
+#ifdef BARENN_CUDA
+        Barenn::treinar_cuda(treino, l1, l2, l3, perdas, taxa);
+#else
         for (int epoca = 0; epoca < epocas; ++epoca) {
             double perda_total = 0;
             // Uma época percorre todo o conjunto na ordem do arquivo.
@@ -295,6 +304,7 @@ int main(int argc, char** argv) {
             }
             perdas[epoca] = perda_total / treino.size();
         }
+#endif
         const chrono::duration<double> tempo = chrono::steady_clock::now() - inicio;
 
         // Imprime as métricas e roda a avaliação após encerrar o cronômetro.
