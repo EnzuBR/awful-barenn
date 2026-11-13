@@ -9,8 +9,10 @@ from pathlib import Path
 
 
 TEMPOS = {
+    "leitura": "Tempo de leitura",
     "treino": "Tempo de treino",
     "inferencia": "Tempo de inferencia",
+    "avaliacao": "Tempo de avaliacao",
     "gpu_h2d": "CUDA H2D",
     "gpu_kernel": "CUDA kernels",
     "gpu_d2h": "CUDA D2H",
