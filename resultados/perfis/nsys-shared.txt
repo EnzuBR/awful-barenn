@@ -1,0 +1,14 @@
+Generating SQLite file <FERRAMENTAS>\aps2-bench\shared.sqlite from <FERRAMENTAS>\aps2-bench\shared.nsys-rep
+Processing [<FERRAMENTAS>\aps2-bench\shared.sqlite] with [<FERRAMENTAS>\nsight-systems-12.6.3\nsight-systems\2024.5.1\host-windows-x64\reports\cuda_gpu_kern_sum.py]...
+Time (%),Total Time (ns),Instances,Avg (ns),Med (ns),Min (ns),Max (ns),StdDev (ns),Name
+100.0,1018294416,1530,665551.9,633438.0,550590,1000637,107519.8,"Barenn::gpu::treinar_lote(Barenn::gpu::Modelo *, const Barenn::gpu::Exemplo *, float *, int, float)"
+
+Processing [<FERRAMENTAS>\aps2-bench\shared.sqlite] with [<FERRAMENTAS>\nsight-systems-12.6.3\nsight-systems\2024.5.1\host-windows-x64\reports\cuda_gpu_mem_time_sum.py]...
+Time (%),Total Time (ns),Count,Avg (ns),Med (ns),Min (ns),Max (ns),StdDev (ns),Operation
+56.7,81280,2,40640.0,40640.0,2336,78944,54170.0,[CUDA memcpy Host-to-Device]
+43.3,62144,2,31072.0,31072.0,2048,60096,41046.1,[CUDA memcpy Device-to-Host]
+
+Processing [<FERRAMENTAS>\aps2-bench\shared.sqlite] with [<FERRAMENTAS>\nsight-systems-12.6.3\nsight-systems\2024.5.1\host-windows-x64\reports\cuda_gpu_mem_size_sum.py]...
+Total (MB),Count,Avg (MB),Med (MB),Min (MB),Max (MB),StdDev (MB),Operation
+1.005,2,0.503,0.503,0.011,0.994,0.695,[CUDA memcpy Host-to-Device]
+0.791,2,0.396,0.396,0.011,0.780,0.544,[CUDA memcpy Device-to-Host]

@@ -1,0 +1,5 @@
+inicio_ns,fim_ns,duracao_ns,bytes,operacao
+0,2304,2304,11112,Host-to-Device
+83679,162463,78784,993980,Host-to-Device
+803281660,803283708,2048,11112,Device-to-Host
+803375708,803435804,60096,779892,Device-to-Host

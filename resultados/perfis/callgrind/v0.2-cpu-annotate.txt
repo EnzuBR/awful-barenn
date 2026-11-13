@@ -1,0 +1,357 @@
+--------------------------------------------------------------------------------
+Profile data file 'callgrind.out' (creator: callgrind-3.22.0)
+--------------------------------------------------------------------------------
+I1 cache: 32768 B, 64 B, 8-way associative
+D1 cache: 49152 B, 64 B, 12-way associative
+LL cache: 25165824 B, 64 B, 12-way associative
+Timerange: Basic block 0 - 1388222232
+Trigger: Program termination
+Profiled target:  ./barenn (PID 1409, part 1)
+Events recorded:  Ir Dr Dw I1mr D1mr D1mw ILmr DLmr DLmw
+Events shown:     Ir Dr Dw I1mr D1mr D1mw ILmr DLmr DLmw
+Event sort order: Ir Dr Dw I1mr D1mr D1mw ILmr DLmr DLmw
+Thresholds:       92 0 0 0 0 0 0 0 0
+Include dirs:
+User annotated:
+Auto-annotation:  on
+
+--------------------------------------------------------------------------------
+Ir                      Dr                     Dw                   I1mr             D1mr             D1mw            ILmr           DLmr           DLmw
+--------------------------------------------------------------------------------
+10,868,372,997 (100.0%) 2,596,801,185 (100.0%) 780,145,030 (100.0%) 142,585 (100.0%) 964,708 (100.0%) 32,604 (100.0%) 3,285 (100.0%) 7,818 (100.0%) 29,060 (100.0%)  PROGRAM TOTALS
+
+--------------------------------------------------------------------------------
+Ir                      Dr                     Dw                   I1mr            D1mr             D1mw           ILmr        DLmr           DLmw            file:function
+--------------------------------------------------------------------------------
+10,321,168,022 (94.97%) 2,437,942,834 (93.88%) 697,028,864 (89.35%)     40 ( 0.03%) 926,673 (96.06%)    64 ( 0.20%) 39 ( 1.19%)     .              .           barenn.cpp:main [<COLETA>/v0.2-cpu/barenn]
+
+--------------------------------------------------------------------------------
+-- Auto-annotated source: barenn.cpp
+--------------------------------------------------------------------------------
+Ir                     Dr                     Dw                   I1mr       D1mr             D1mw         ILmr       DLmr       DLmw
+
+-- line 23 ----------------------------------------
+            .                      .                    .          .                .            .          .          .          .           namespace Barenn {
+            .                      .                    .          .                .            .          .          .          .
+            .                      .                    .          .                .            .          .          .          .           // Cada imagem tem 64 atributos e pertence a uma das dez classes.
+            .                      .                    .          .                .            .          .          .          .           constexpr int entradas = 64;
+            .                      .                    .          .                .            .          .          .          .           constexpr int classes = 10;
+            .                      .                    .          .                .            .          .          .          .           constexpr int oculta1 = 32;
+            .                      .                    .          .                .            .          .          .          .           constexpr int oculta2 = 16;
+            .                      .                    .          .                .            .          .          .          .
+           12 ( 0.00%)             0                    6 ( 0.00%) 2 ( 0.00%)       0            0          2 ( 0.06%) .          .           class DenseLayer {
+          806 ( 0.00%)           230 ( 0.00%)         122 ( 0.00%) 1 ( 0.00%)      11 ( 0.00%)   0          1 ( 0.03%) .          .           => /usr/include/c++/13/bits/stl_vector.h:std::vector<float, std::allocator<float> >::~vector() (6x)
+            .                      .                    .          .                .            .          .          .          .               int in_features;
+            .                      .                    .          .                .            .          .          .          .               int out_features;
+            .                      .                    .          .                .            .          .          .          .               bool final;
+            .                      .                    .          .                .            .          .          .          .               // A linha i contém os pesos de todas as entradas do neurônio i.
+            .                      .                    .          .                .            .          .          .          .               vector<float> weights;
+            .                      .                    .          .                .            .          .          .          .               vector<float> bias;
+            .                      .                    .          .                .            .          .          .          .
+            .                      .                    .          .                .            .          .          .          .           public:
+           42 ( 0.00%)             3 ( 0.00%)          24 ( 0.00%) 2 ( 0.00%)       0            1 ( 0.00%) 2 ( 0.06%) .          .               DenseLayer(int input_size, int output_size, bool is_final = false)
+            9 ( 0.00%)             0                    9 ( 0.00%) .                .            .          .          .          .                   : in_features(input_size), out_features(output_size), final(is_final),
+            6 ( 0.00%)             .                    .          .                .            .          .          .          .                     weights(output_size * input_size), bias(output_size, 0) {
+            .                      .                    .          .                .            .          .          .          .                   mt19937 gen(1337);
+            .                      .                    .          .                .            .          .          .          .                   uniform_real_distribution<float> distribution(-0.05f, 0.05f);
+        8,172 ( 0.00%)             6 ( 0.00%)           .          .                .            .          .          .          .                   for (float& weight : weights) {
+        2,720 ( 0.00%)             0                2,720 ( 0.00%) .                .            .          .          .          .                       weight = distribution(gen);
+            .                      .                    .          .                .            .          .          .          .                   }
+           33 ( 0.00%)            27 ( 0.00%)           .          .                .            .          .          .          .               }
+            .                      .                    .          .                .            .          .          .          .
+            .                      .                    .          .                .            .          .          .          .               const vector<float>& pesos() const { return weights; }
+            .                      .                    .          .                .            .          .          .          .               vector<float>& pesos() { return weights; }
+            .                      .                    .          .                .            .          .          .          .               const vector<float>& vieses() const { return bias; }
+            .                      .                    .          .                .            .          .          .          .               vector<float>& vieses() { return bias; }
+            .                      .                    .          .                .            .          .          .          .
+            .                      .                    .          .                .            .          .          .          .               void Forward(const float* input, float* out, float* z = nullptr) const {
+   50,935,226 ( 0.47%)     2,543,802 ( 0.10%)     780,060 ( 0.10%) 6 ( 0.00%)       2 ( 0.00%)   1 ( 0.00%) 6 ( 0.18%) .          .                   for (int i = 0; i < out_features; ++i) {
+       28,758 ( 0.00%)         8,988 ( 0.00%)       1,800 ( 0.00%) 2 ( 0.00%)       0            0          2 ( 0.06%) .          .                       const float* row = weights.data() + i * in_features;
+   11,412,660 ( 0.11%)    11,412,660 ( 0.44%)           0          1 ( 0.00%)       5 ( 0.00%)   0          1 ( 0.03%) .          .                       float sum = bias[i];
+1,656,409,860 (15.24%)             0                    0          2 ( 0.00%)       0            0          2 ( 0.06%) .          .                       for (int j = 0; j < in_features; ++j) {
+1,605,643,200 (14.77%) 1,070,428,800 (41.22%)           0          0          836,949 (86.76%)   .          .          .          .                           sum += input[j] * row[j];
+            .                      .                    .          .                .            .          .          .          .                       }
+            .                      .                    .          .                .            .          .          .          .                       if (z) {
+    9,358,704 ( 0.09%)             0            9,358,704 ( 1.20%) 0                0            4 ( 0.01%) .          .          .                           z[i] = sum;
+            .                      .                    .          .                .            .          .          .          .                       }
+   34,255,956 ( 0.32%)        10,785 ( 0.00%)  11,412,663 ( 1.46%) 3 ( 0.00%)       0           11 ( 0.03%) 3 ( 0.09%) .          .                       out[i] = final ? sum : max(0.0f, sum);
+            .                      .                    .          .                .            .          .          .          .                   }
+            .                      .                    .          .                .            .          .          .          .               }
+            .                      .                    .          .                .            .          .          .          .
+            .                      .                    .          .                .            .          .          .          .               void Backward(const float* input, const float* z, const float* grad_out,
+            .                      .                    .          .                .            .          .          .          .                             float learning_rate, float* grad_in) {
+            .                      .                    .          .                .            .          .          .          .                   if (grad_in) {
+            .                      .                    .          .                .            .          .          .          .                       fill_n(grad_in, in_features, 0.0f);
+            .                      .                    .          .                .            .          .          .          .                   }
+   49,523,142 ( 0.46%)     2,144,703 ( 0.08%)           0          3 ( 0.00%)       0            0          3 ( 0.09%) .          .                   for (int i = 0; i < out_features; ++i) {
+   40,045,273 ( 0.37%)    11,308,434 ( 0.44%)           .          .                .            .          .          .          .                       const float delta = final ? grad_out[i]
+   32,755,464 ( 0.30%)    12,283,299 ( 0.47%)     584,919 ( 0.07%) 3 ( 0.00%)       0            0          3 ( 0.09%) .          .                                                 : grad_out[i] * (z[i] > 0.0f ? 1.0f : 0.0f);
+            .                      .                    .          .                .            .          .          .          .                       float* row = weights.data() + i * in_features;
+            .                      .                    .          .                .            .          .          .          .                       // Percorre uma linha contígua e usa os pesos antes de atualizá-los.
+            .                      .                    .          .                .            .          .          .          .                       if (grad_in) {
+  564,641,808 ( 5.20%)             0                    0          2 ( 0.00%)       0            0          2 ( 0.06%) .          .                           for (int j = 0; j < in_features; ++j) {
+  524,087,424 ( 4.82%)   262,043,712 (10.09%) 131,021,856 (16.79%) .                .            .          .          .          .                               grad_in[j] += delta * row[j];
+            .                      .                    .          .                .            .          .          .          .                           }
+            .                      .                    .          .                .            .          .          .          .                       }
+2,021,480,064 (18.60%)             .                    .          .                .            .          .          .          .                       for (int j = 0; j < in_features; ++j) {
+3,681,090,240 (33.87%) 1,060,653,120 (40.84%) 530,326,560 (67.98%) 2 ( 0.00%)       0            0          2 ( 0.06%) .          .                           row[j] -= learning_rate * (delta * input[j]);
+            .                      .                    .          .                .            .          .          .          .                       }
+   45,233,736 ( 0.42%)    11,308,434 ( 0.44%)  11,308,434 ( 1.45%) 1 ( 0.00%)       0            0          1 ( 0.03%) .          .                       bias[i] -= learning_rate * delta;
+            .                      .                    .          .                .            .          .          .          .                   }
+            .                      .                    .          .                .            .          .          .          .               }
+            .                      .                    .          .                .            .          .          .          .           };
+            .                      .                    .          .                .            .          .          .          .
+       23,524 ( 0.00%)        11,762 ( 0.00%)      11,762 ( 0.00%) .                .            .          .          .          .           struct Amostra {
+            .                      .                    .          .                .            .          .          .          .               vector<float> imagem;
+            .                      .                    .          .                .            .          .          .          .               int rotulo;
+            .                      .                    .          .                .            .          .          .          .           };
+            .                      .                    .          .                .            .          .          .          .
+           28 ( 0.00%)             2 ( 0.00%)          18 ( 0.00%) 4 ( 0.00%)       0            2 ( 0.01%) 2 ( 0.06%) .          .           vector<Amostra> ler_dados(const string& caminho) {
+            .                      .                    .          .                .            .          .          .          .               ifstream arquivo(caminho);
+            4 ( 0.00%)             2 ( 0.00%)           .          .                .            .          .          .          .               if (!arquivo) {
+            .                      .                    .          .                .            .          .          .          .                   throw runtime_error("Não foi possível abrir " + caminho);
+            .                      .                    .          .                .            .          .          .          .               }
+            .                      .                    .          .                .            .          .          .          .
+            .                      .                    .          .                .            .          .          .          .               vector<Amostra> dados;
+            .                      .                    .          .                .            .          .          .          .               string linha;
+            6 ( 0.00%)             0                    4 ( 0.00%) .                .            .          .          .          .               size_t numero_linha = 0;
+       16,866 ( 0.00%)        11,244 ( 0.00%)           .          .                .            .          .          .          .               while (getline(arquivo, linha)) {
+        5,620 ( 0.00%)             0                5,620 ( 0.00%) .                .            .          .          .          .                   ++numero_linha;
+            .                      .                    .          .                .            .          .          .          .                   istringstream campos(linha);
+        5,620 ( 0.00%)             0                5,620 ( 0.00%) .                .            .          .          .          .                   Amostra amostra{};
+            .                      .                    .          .                .            .          .          .          .                   // Cada atributo deve ser seguido por vírgula, inclusive o último.
+      736,220 ( 0.01%)         5,620 ( 0.00%)           0          1 ( 0.00%)       0            0          1 ( 0.03%) .          .                   for (int i = 0; i < entradas; ++i) {
+            .                      .                    .          .                .            .          .          .          .                       float valor;
+            .                      .                    .          .                .            .          .          .          .                       char separador;
+    3,237,120 ( 0.03%)     1,438,720 ( 0.06%)     359,680 ( 0.05%) 1 ( 0.00%)       4 ( 0.00%)   0          1 ( 0.03%) 1 ( 0.01%) .                       if (!(campos >> valor >> separador) || separador != ',' ||
+   32,371,200 ( 0.30%)    13,308,160 ( 0.51%)   5,035,520 ( 0.65%) 5 ( 0.00%)       0            0          3 ( 0.09%) .          .           => ???:0x000000000010b6a0 (359,680x)
+    2,877,440 ( 0.03%)     1,079,040 ( 0.04%)           0          2 ( 0.00%)       0            0          1 ( 0.03%) .          .                           !isfinite(valor) || valor < 0 || valor > 16) {
+            .                      .                    .          .                .            .          .          .          .                           break;
+            .                      .                    .          .                .            .          .          .          .                       }
+            .                      .                    .          .                .            .          .          .          .                       // Converte os valores de [0, 16] para [0, 1].
+      719,360 ( 0.01%)       359,680 ( 0.01%)     359,680 ( 0.05%) .                .            .          .          .          .                       amostra.imagem.push_back(valor / 16.0f);
+            .                      .                    .          .                .            .          .          .          .                   }
+            .                      .                    .          .                .            .          .          .          .                   // Depois dos atributos, deve restar apenas o rótulo de 0 a 9.
+       11,240 ( 0.00%)         5,620 ( 0.00%)           0          2 ( 0.00%)       0            0          1 ( 0.03%) .          .                   if (amostra.imagem.size() != entradas ||
+       28,100 ( 0.00%)         5,620 ( 0.00%)       5,620 ( 0.00%) .                .            .          .          .          .                       !(campos >> amostra.rotulo) ||
+    2,458,498 ( 0.02%)       800,256 ( 0.03%)     439,646 ( 0.06%) 33,912 (23.78%)      29 ( 0.00%)   0          39 ( 1.19%) 2 ( 0.03%) .           => ???:0x000000000010b550 (5,620x)
+       33,720 ( 0.00%)        11,240 ( 0.00%)           .          .                .            .          .          .          .                       amostra.rotulo < 0 || amostra.rotulo >= classes ||
+        5,620 ( 0.00%)         5,620 ( 0.00%)           .          .                .            .          .          .          .                       !(campos >> ws).eof()) {
+            .                      .                    .          .                .            .          .          .          .                       throw runtime_error(caminho + ":" + to_string(numero_linha) +
+            .                      .                    .          .                .            .          .          .          .                           " — esperados 64 atributos de 0 a 16 e um rótulo inteiro de 0 a 9");
+            .                      .                    .          .                .            .          .          .          .                   }
+            .                      .                    .          .                .            .          .          .          .                   dados.push_back(move(amostra));
+            .                      .                    .          .                .            .          .          .          .               }
+           12 ( 0.00%)             8 ( 0.00%)           0          4 ( 0.00%)       0            0          1 ( 0.03%) .          .               if (arquivo.bad() || dados.empty()) {
+            .                      .                    .          .                .            .          .          .          .                   throw runtime_error("Falha de leitura ou arquivo vazio: " + caminho);
+            .                      .                    .          .                .            .          .          .          .               }
+            .                      .                    .          .                .            .          .          .          .               return dados;
+           24 ( 0.00%)            20 ( 0.00%)           0          0                2 ( 0.00%)   .          .          .          .           }
+            .                      .                    .          .                .            .          .          .          .
+            .                      .                    .          .                .            .          .          .          .           // Calcula metade da soma dos erros quadráticos. O alvo vale 1 para a
+            .                      .                    .          .                .            .          .          .          .           // classe correta e 0 para as demais. O erro também é a derivada por escore.
+            .                      .                    .          .                .            .          .          .          .           float perda(const float* escores, int rotulo, float* gradiente = nullptr) {
+      196,770 ( 0.00%)             0                    0          1 ( 0.00%)       0            0          1 ( 0.03%) .          .               float total = 0;
+    5,904,897 ( 0.05%)             .                    .          .                .            .          .          .          .               for (int i = 0; i < classes; ++i) {
+    6,296,644 ( 0.06%)     2,162,677 ( 0.08%)           0          1 ( 0.00%)       0            0          1 ( 0.03%) .          .                   float erro = escores[i] - (i == rotulo ? 1.0f : 0.0f);
+    7,870,800 ( 0.07%)             .                    .          .                .            .          .          .          .                   total += 0.5f * erro * erro;
+            .                      .                    .          .                .            .          .          .          .                   if (gradiente) {
+    1,949,730 ( 0.02%)             0            1,949,730 ( 0.25%) .                .            .          .          .          .                       gradiente[i] = erro;
+            .                      .                    .          .                .            .          .          .          .                   }
+            .                      .                    .          .                .            .          .          .          .               }
+            .                      .                    .          .                .            .          .          .          .               return total;
+            .                      .                    .          .                .            .          .          .          .           }
+            .                      .                    .          .                .            .          .          .          .
+            .                      .                    .          .                .            .          .          .          .           void avaliar(const DenseLayer& l1, const DenseLayer& l2, const DenseLayer& l3,
+            8 ( 0.00%)             0                    6 ( 0.00%) 1 ( 0.00%)       0            0          1 ( 0.03%) .          .                        const vector<Amostra>& teste) {
+            .                      .                    .          .                .            .          .          .          .               struct Resultado {
+            .                      .                    .          .                .            .          .          .          .                   int previsto;
+            .                      .                    .          .                .            .          .          .          .                   float erro;
+            .                      .                    .          .                .            .          .          .          .               };
+            .                      .                    .          .                .            .          .          .          .               vector<Resultado> resultados(teste.size());
+            .                      .                    .          .                .            .          .          .          .
+            .                      .                    .          .                .            .          .          .          .           #ifdef _OPENMP
+            6 ( 0.00%)             0                    2 ( 0.00%) 1 ( 0.00%)       0            0          1 ( 0.03%) .          .               const int threads = getenv("OMP_NUM_THREADS") ? omp_get_max_threads()
+          252 ( 0.00%)            69 ( 0.00%)           9 ( 0.00%) 10 ( 0.01%)      17 ( 0.00%)   0          0          1 ( 0.01%) .           => ???:0x000000000010b660 (1x)
+           11 ( 0.00%)             5 ( 0.00%)           0          2 ( 0.00%)       3 ( 0.00%)   0          1 ( 0.03%) .          .           => ???:0x000000000010b770 (1x)
+            .                      .                    .          .                .            .          .          .          .                                                            : min(4, omp_get_max_threads());
+            .                      .                    .          .                .            .          .          .          .           #endif
+            5 ( 0.00%)             0                    1 ( 0.00%) .                .            .          .          .          .               const auto inicio = chrono::steady_clock::now();
+           31 ( 0.00%)            12 ( 0.00%)           3 ( 0.00%) 1 ( 0.00%)       .            .          .          .          .           => ???:0x000000000010b6b0 (1x)
+            .                      .                    .          .                .            .          .          .          .           #ifdef _OPENMP
+           91 ( 0.00%)            36 ( 0.00%)          31 ( 0.00%) 3 ( 0.00%)       8 ( 0.00%)   0          3 ( 0.09%) .          .               #pragma omp parallel for num_threads(threads) schedule(static)
+    7,838,179 ( 0.07%)     2,501,734 ( 0.10%)      29,590 ( 0.00%) 221 ( 0.15%)   2,285 ( 0.24%) 169 ( 0.52%) 164 ( 4.99%) 17 ( 0.22%) 97 ( 0.33%)  => ???:0x000000000010b6e0 (1x)
+            .                      .                    .          .                .            .          .          .          .           #endif
+           12 ( 0.00%)             8 ( 0.00%)           4 ( 0.00%) 0                5 ( 0.00%)   2 ( 0.01%) .          .          .               for (size_t i = 0; i < teste.size(); ++i) {
+            .                      .                    .          .                .            .          .          .          .                   const auto& amostra = teste[i];
+            .                      .                    .          .                .            .          .          .          .                   array<float, oculta1> a1;
+            .                      .                    .          .                .            .          .          .          .                   array<float, oculta2> a2;
+            .                      .                    .          .                .            .          .          .          .                   array<float, classes> escores;
+           12 ( 0.00%)             4 ( 0.00%)           .          .                .            .          .          .          .                   l1.Forward(amostra.imagem.data(), a1.data());
+           12 ( 0.00%)             4 ( 0.00%)           4 ( 0.00%) .                .            .          .          .          .                   l2.Forward(a1.data(), a2.data());
+            8 ( 0.00%)             4 ( 0.00%)           4 ( 0.00%) 0                0            4 ( 0.01%) 0          0          3 ( 0.01%)          l3.Forward(a2.data(), escores.data());
+       10,782 ( 0.00%)         3,594 ( 0.00%)       3,594 ( 0.00%) 1 ( 0.00%)       0          223 ( 0.68%) 1 ( 0.03%) .          .                   resultados[i] = {
+        3,594 ( 0.00%)             .                    .          .                .            .          .          .          .                       static_cast<int>(max_element(escores.begin(), escores.end()) - escores.begin()),
+        5,391 ( 0.00%)         3,594 ( 0.00%)           .          .                .            .          .          .          .                       perda(escores.data(), amostra.rotulo)
+            .                      .                    .          .                .            .          .          .          .                   };
+            .                      .                    .          .                .            .          .          .          .               }
+            1 ( 0.00%)             0                    1 ( 0.00%) .                .            .          .          .          .               const chrono::duration<double> tempo = chrono::steady_clock::now() - inicio;
+           31 ( 0.00%)            12 ( 0.00%)           3 ( 0.00%) 1 ( 0.00%)       5 ( 0.00%)   .          .          .          .           => ???:0x000000000010b6b0 (1x)
+            .                      .                    .          .                .            .          .          .          .
+            .                      .                    .          .                .            .          .          .          .               // Soma na ordem das amostras para manter as métricas e os exemplos.
+          105 ( 0.00%)             0                  101 ( 0.00%) 0                0           14 ( 0.04%) .          .          .               array<array<size_t, classes>, classes> confusoes{};
+            .                      .                    .          .                .            .          .          .          .               vector<pair<int, int>> exemplos;
+           21 ( 0.00%)             .                    .          .                .            .          .          .          .               size_t acertos = 0;
+            1 ( 0.00%)             0                    1 ( 0.00%) .                .            .          .          .          .               size_t exemplos_acerto = 0;
+            1 ( 0.00%)             0                    1 ( 0.00%) 1 ( 0.00%)       0            1 ( 0.00%) 1 ( 0.03%) .          .               size_t exemplos_erro = 0;
+            2 ( 0.00%)             0                    1 ( 0.00%) .                .            .          .          .          .               double perda_total = 0;
+        5,394 ( 0.00%)             1 ( 0.00%)           .          .                .            .          .          .          .               for (size_t i = 0; i < teste.size(); ++i) {
+        5,391 ( 0.00%)         1,797 ( 0.00%)           0          1 ( 0.00%)     899 ( 0.09%)   0          1 ( 0.03%) .          .                   const int real = teste[i].rotulo;
+        3,594 ( 0.00%)         3,594 ( 0.00%)           0          0              225 ( 0.02%)   .          .          .          .                   const auto [previsto, erro] = resultados[i];
+        5,391 ( 0.00%)             .                    .          .                .            .          .          .          .                   const bool acertou = previsto == real;
+        1,797 ( 0.00%)             .                    .          .                .            .          .          .          .                   acertos += acertou;
+        8,985 ( 0.00%)             0                1,797 ( 0.00%) 0                0            1 ( 0.00%) .          .          .                   ++confusoes[real][previsto];
+       10,782 ( 0.00%)         1,797 ( 0.00%)       1,797 ( 0.00%) 1 ( 0.00%)       0            0          1 ( 0.03%) .          .                   perda_total += erro;
+            .                      .                    .          .                .            .          .          .          .
+       12,499 ( 0.00%)         1,877 ( 0.00%)       3,594 ( 0.00%) .                .            .          .          .          .                   size_t& exemplos_tipo = acertou ? exemplos_acerto : exemplos_erro;
+        3,594 ( 0.00%)         1,797 ( 0.00%)           .          .                .            .          .          .          .                   if (exemplos_tipo < 3) {
+            .                      .                    .          .                .            .          .          .          .                       exemplos.emplace_back(real, previsto);
+           30 ( 0.00%)            12 ( 0.00%)           6 ( 0.00%) 1 ( 0.00%)       0            0          1 ( 0.03%) .          .                       ++exemplos_tipo;
+            .                      .                    .          .                .            .          .          .          .                   }
+            .                      .                    .          .                .            .          .          .          .               }
+            .                      .                    .          .                .            .          .          .          .
+            .                      .                    .          .                .            .          .          .          .               cout << "\nAVALIACAO FINAL\n"
+           10 ( 0.00%)             1 ( 0.00%)           0          1 ( 0.00%)       1 ( 0.00%)   0          1 ( 0.03%) .          .                    << "Acuracia " << setprecision(1) << 100.0 * acertos / teste.size()
+            .                      .                    .          .                .            .          .          .          .                    << "% | " << acertos << " acertos em " << teste.size() << " imagens\n"
+            6 ( 0.00%)             1 ( 0.00%)           0          1 ( 0.00%)       0            0          1 ( 0.03%) .          .                    << "Perda media " << setprecision(4) << perda_total / teste.size() << "\n"
+            .                      .                    .          .                .            .          .          .          .                    << "Tempo de inferencia " << setprecision(6) << tempo.count() << " s\n";
+            .                      .                    .          .                .            .          .          .          .
+            .                      .                    .          .                .            .          .          .          .               cout << "\nALGUMAS INFERENCIAS\n";
+            .                      .                    .          .                .            .          .          .          .               cout << "Esperado  Previsto\n";
+            .                      .                    .          .                .            .          .          .          .
+           21 ( 0.00%)             1 ( 0.00%)           .          .                .            .          .          .          .               for (const auto& [real, previsto] : exemplos) {
+            .                      .                    .          .                .            .          .          .          .                   cout << right << setw(8) << real
+           48 ( 0.00%)            12 ( 0.00%)          12 ( 0.00%) 1 ( 0.00%)       2 ( 0.00%)   0          1 ( 0.03%) .          .                        << "  " << setw(8) << previsto << '\n';
+        6,354 ( 0.00%)         1,644 ( 0.00%)       1,008 ( 0.00%) 26 ( 0.02%)       5 ( 0.00%)   2 ( 0.01%) 1 ( 0.03%) .          .           => ???:0x000000000010b7a0 (12x)
+            .                      .                    .          .                .            .          .          .          .               }
+            .                      .                    .          .                .            .          .          .          .
+            .                      .                    .          .                .            .          .          .          .               struct Confusao {
+            .                      .                    .          .                .            .          .          .          .                   int real;
+            .                      .                    .          .                .            .          .          .          .                   int previsto;
+            .                      .                    .          .                .            .          .          .          .                   size_t ocorrencias;
+            .                      .                    .          .                .            .          .          .          .               };
+            .                      .                    .          .                .            .          .          .          .               vector<Confusao> erros;
+           44 ( 0.00%)             1 ( 0.00%)          11 ( 0.00%) 1 ( 0.00%)       0            0          1 ( 0.03%) .          .               for (int real = 0; real < classes; ++real) {
+          300 ( 0.00%)             .                    .          .                .            .          .          .          .                   for (int previsto = 0; previsto < classes; ++previsto) {
+          596 ( 0.00%)           180 ( 0.00%)          36 ( 0.00%) 0                1 ( 0.00%)   .          .          .          .                       if (real != previsto && confusoes[real][previsto] > 0) {
+            .                      .                    .          .                .            .          .          .          .                           erros.push_back({real, previsto, confusoes[real][previsto]});
+            .                      .                    .          .                .            .          .          .          .                       }
+            .                      .                    .          .                .            .          .          .          .                   }
+            .                      .                    .          .                .            .          .          .          .               }
+            .                      .                    .          .                .            .          .          .          .               // Ordena os pares incorretos do mais frequente para o menos frequente.
+            .                      .                    .          .                .            .          .          .          .               stable_sort(erros.begin(), erros.end(), [](const auto& a, const auto& b) {
+           30 ( 0.00%)            30 ( 0.00%)           0          1 ( 0.00%)       0            0          1 ( 0.03%) .          .                   return a.ocorrencias > b.ocorrencias;
+            .                      .                    .          .                .            .          .          .          .               });
+            .                      .                    .          .                .            .          .          .          .               cout << "\nCONFUSOES MAIS FREQUENTES\n";
+            .                      .                    .          .                .            .          .          .          .
+            .                      .                    .          .                .            .          .          .          .               if (erros.empty()) {
+            .                      .                    .          .                .            .          .          .          .                   cout << "Nenhuma neste conjunto.\n";
+            .                      .                    .          .                .            .          .          .          .               } else {
+            .                      .                    .          .                .            .          .          .          .                   cout << "Esperado  Previsto  Ocorrencias\n";
+            .                      .                    .          .                .            .          .          .          .
+           11 ( 0.00%)             4 ( 0.00%)           0          1 ( 0.00%)       0            0          1 ( 0.03%) .          .                   for (size_t i = 0; i < min<size_t>(3, erros.size()); ++i) {
+            .                      .                    .          .                .            .          .          .          .                       const auto& erro = erros[i];
+            .                      .                    .          .                .            .          .          .          .                       cout << right << setw(8) << erro.real
+           12 ( 0.00%)             3 ( 0.00%)           3 ( 0.00%) .                .            .          .          .          .                           << "  " << setw(8) << erro.previsto
+        1,587 ( 0.00%)           411 ( 0.00%)         252 ( 0.00%) .                .            .          .          .          .           => ???:0x000000000010b7a0 (3x)
+           12 ( 0.00%)             3 ( 0.00%)           3 ( 0.00%) .                .            .          .          .          .                           << "  " << setw(11) << erro.ocorrencias << '\n';
+        1,587 ( 0.00%)           411 ( 0.00%)         252 ( 0.00%) .                .            .          .          .          .           => ???:0x000000000010b7a0 (3x)
+            .                      .                    .          .                .            .          .          .          .                   }
+            .                      .                    .          .                .            .          .          .          .               }
+           11 ( 0.00%)             9 ( 0.00%)           0          0                1 ( 0.00%)   .          .          .          .           }
+            .                      .                    .          .                .            .          .          .          .
+            .                      .                    .          .                .            .          .          .          .           } // namespace Barenn
+            .                      .                    .          .                .            .          .          .          .
+            9 ( 0.00%)             0                    6 ( 0.00%) 1 ( 0.00%)       0            0          1 ( 0.03%) .          .           int main(int argc, char** argv) {
+            6 ( 0.00%)             1 ( 0.00%)           1 ( 0.00%) 1 ( 0.00%)       0            0          1 ( 0.03%) .          .               if (argc != 1 && argc != 3) {
+            .                      .                    .          .                .            .          .          .          .                   cerr << "Uso: " << argv[0] << " [arquivo_treino arquivo_teste]\n";
+            .                      .                    .          .                .            .          .          .          .                   return 1;
+            .                      .                    .          .                .            .          .          .          .               }
+            9 ( 0.00%)             0                    2 ( 0.00%) 1 ( 0.00%)       0            0          1 ( 0.03%) .          .               const string arquivo_treino = argc == 3 ? argv[1] : "optdigits.tra";
+           75 ( 0.00%)            17 ( 0.00%)          13 ( 0.00%) 8 ( 0.01%)       3 ( 0.00%)   0          8 ( 0.24%) 1 ( 0.01%) .           => /usr/include/c++/13/bits/basic_string.h:std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >::basic_string<std::allocator<char> >(char const*, std::allocator<char> const&) (1x)
+            6 ( 0.00%)             1 ( 0.00%)           2 ( 0.00%) .                .            .          .          .          .               const string arquivo_teste = argc == 3 ? argv[2] : "optdigits.tes";
+           75 ( 0.00%)            17 ( 0.00%)          13 ( 0.00%) .                .            .          .          .          .           => /usr/include/c++/13/bits/basic_string.h:std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >::basic_string<std::allocator<char> >(char const*, std::allocator<char> const&) (1x)
+            .                      .                    .          .                .            .          .          .          .
+            .                      .                    .          .                .            .          .          .          .               try {
+            4 ( 0.00%)             0                    2 ( 0.00%) 1 ( 0.00%)       0            0          1 ( 0.03%) .          .                   const auto treino = Barenn::ler_dados(arquivo_treino);
+  320,791,478 ( 2.95%)    97,527,808 ( 3.76%)  54,172,904 ( 6.94%) 94,539 (66.30%)   3,208 ( 0.33%) 19,871 (60.95%) 506 (15.40%) 203 ( 2.60%) 18,221 (62.70%)  => barenn.cpp:Barenn::ler_dados(std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> > const&) (1x)
+            4 ( 0.00%)             0                    2 ( 0.00%) 0                0            1 ( 0.00%) .          .          .                   const auto teste = Barenn::ler_dados(arquivo_teste);
+  150,740,095 ( 1.39%)    45,836,181 ( 1.77%)  25,461,058 ( 3.26%) 44,560 (31.25%)   1,388 ( 0.14%) 9,107 (27.93%) 0          0          8,544 (29.40%)  => barenn.cpp:Barenn::ler_dados(std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> > const&) (1x)
+           17 ( 0.00%)             0                    4 ( 0.00%) 1 ( 0.00%)       0            1 ( 0.00%) 1 ( 0.03%) .          .                   if (filesystem::equivalent(arquivo_treino, arquivo_teste)) {
+        2,632 ( 0.00%)           878 ( 0.00%)         420 ( 0.00%) 54 ( 0.04%)      87 ( 0.01%)   2 ( 0.01%) 20 ( 0.61%) 6 ( 0.08%) .           => ???:0x000000000010b5c0 (1x)
+          770 ( 0.00%)           100 ( 0.00%)         452 ( 0.00%) 17 ( 0.01%)       2 ( 0.00%)   4 ( 0.01%) 16 ( 0.49%) .          .           => /usr/include/c++/13/bits/fs_path.h:std::filesystem::__cxx11::path::path<std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >, std::filesystem::__cxx11::path>(std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> > const&, std::filesystem::__cxx11::path::format) (2x)
+            .                      .                    .          .                .            .          .          .          .                       throw runtime_error("Use arquivos distintos para treino e teste.");
+            .                      .                    .          .                .            .          .          .          .                   }
+            .                      .                    .          .                .            .          .          .          .
+            .                      .                    .          .                .            .          .          .          .                   constexpr int epocas = 51;
+            .                      .                    .          .                .            .          .          .          .                   constexpr float taxa = 0.02f;
+            .                      .                    .          .                .            .          .          .          .                   // Rede densa com dimensões 64 -> 32 -> 16 -> 10.
+            7 ( 0.00%)             0                    2 ( 0.00%) 0                0            1 ( 0.00%) .          .          .                   Barenn::DenseLayer l1(Barenn::entradas, Barenn::oculta1);
+      113,518 ( 0.00%)         6,375 ( 0.00%)      14,682 ( 0.00%) 28 ( 0.02%)       1 ( 0.00%)  59 ( 0.18%) 16 ( 0.49%) 1 ( 0.01%) 2 ( 0.01%)  => barenn.cpp:Barenn::DenseLayer::DenseLayer(int, int, bool) (1x)
+            7 ( 0.00%)             0                    2 ( 0.00%) 1 ( 0.00%)       0            0          1 ( 0.03%) .          .                   Barenn::DenseLayer l2(Barenn::oculta1, Barenn::oculta2);
+       30,946 ( 0.00%)         1,652 ( 0.00%)       2,204 ( 0.00%) 2 ( 0.00%)       1 ( 0.00%)  34 ( 0.10%) 1 ( 0.03%) 0          33 ( 0.11%)  => barenn.cpp:Barenn::DenseLayer::DenseLayer(int, int, bool) (1x)
+            5 ( 0.00%)             1 ( 0.00%)           1 ( 0.00%) 0                1 ( 0.00%)   .          .          .          .                   Barenn::DenseLayer l3(Barenn::oculta2, Barenn::classes, true);
+       18,901 ( 0.00%)         1,301 ( 0.00%)       1,452 ( 0.00%) 2 ( 0.00%)       1 ( 0.00%)  10 ( 0.03%) 0          0          10 ( 0.03%)  => barenn.cpp:Barenn::DenseLayer::DenseLayer(int, int, bool) (1x)
+            .                      .                    .          .                .            .          .          .          .                   array<float, Barenn::oculta1> a1, z1, grad2;
+            .                      .                    .          .                .            .          .          .          .                   array<float, Barenn::oculta2> a2, z2, grad3;
+            .                      .                    .          .                .            .          .          .          .                   array<float, Barenn::classes> escores, gradiente;
+           55 ( 0.00%)             0                   51 ( 0.00%) 1 ( 0.00%)       0            6 ( 0.02%) 1 ( 0.03%) .          .                   array<double, epocas> perdas{};
+            .                      .                    .          .                .            .          .          .          .
+            .                      .                    .          .                .            .          .          .          .                   // A medição inclui forward, perda e backward de todas as épocas.
+            2 ( 0.00%)             0                    2 ( 0.00%) .                .            .          .          .          .                   const auto inicio = chrono::steady_clock::now();
+          900 ( 0.00%)           313 ( 0.00%)         139 ( 0.00%) 9 ( 0.01%)      21 ( 0.00%)   0          4 ( 0.12%) 5 ( 0.06%) .           => ???:0x000000000010b6b0 (1x)
+          255 ( 0.00%)            51 ( 0.00%)          51 ( 0.00%) 0               51 ( 0.01%)   .          .          .          .                   for (int epoca = 0; epoca < epocas; ++epoca) {
+            .                      .                    .          .                .            .          .          .          .                       double perda_total = 0;
+            .                      .                    .          .                .            .          .          .          .                       // Uma época percorre todo o conjunto na ordem do arquivo.
+    1,364,964 ( 0.01%)       779,994 ( 0.03%)     194,973 ( 0.02%) 1 ( 0.00%)       0            0          1 ( 0.03%) .          .                       for (const auto& amostra : treino) {
+            .                      .                    .          .                .            .          .          .          .                           const float* imagem = amostra.imagem.data();
+            .                      .                    .          .                .            .          .          .          .                           l1.Forward(imagem, a1.data(), z1.data());
+            .                      .                    .          .                .            .          .          .          .                           l2.Forward(a1.data(), a2.data(), z2.data());
+            .                      .                    .          .                .            .          .          .          .                           l3.Forward(a2.data(), escores.data());
+    1,559,784 ( 0.01%)       779,892 ( 0.03%)     194,973 ( 0.02%) 1 ( 0.00%)  97,461 (10.10%)   0          1 ( 0.03%) .          .                           perda_total += Barenn::perda(escores.data(), amostra.rotulo, gradiente.data());
+            .                      .                    .          .                .            .          .          .          .
+            .                      .                    .          .                .            .          .          .          .                           l3.Backward(a2.data(), nullptr, gradiente.data(), taxa, grad3.data());
+            .                      .                    .          .                .            .          .          .          .                           l2.Backward(a1.data(), z2.data(), grad3.data(), taxa, grad2.data());
+            .                      .                    .          .                .            .          .          .          .                           // O treinamento não usa o gradiente dos pixels da imagem.
+            .                      .                    .          .                .            .          .          .          .                           l1.Backward(imagem, z1.data(), grad2.data(), taxa, nullptr);
+            .                      .                    .          .                .            .          .          .          .                       }
+          235 ( 0.00%)           108 ( 0.00%)          63 ( 0.00%) 4 ( 0.00%)       0           46 ( 0.14%) 4 ( 0.12%) .          .                       perdas[epoca] = perda_total / treino.size();
+            .                      .                    .          .                .            .          .          .          .                   }
+            3 ( 0.00%)             2 ( 0.00%)           1 ( 0.00%) 1 ( 0.00%)       0            0          1 ( 0.03%) .          .                   const chrono::duration<double> tempo = chrono::steady_clock::now() - inicio;
+           31 ( 0.00%)            12 ( 0.00%)           3 ( 0.00%) 0                5 ( 0.00%)   1 ( 0.00%) .          .          .           => ???:0x000000000010b6b0 (1x)
+            .                      .                    .          .                .            .          .          .          .
+            .                      .                    .          .                .            .          .          .          .                   // Imprime as métricas e roda a avaliação após encerrar o cronômetro.
+            .                      .                    .          .                .            .          .          .          .                   cout << fixed << setprecision(4)
+            8 ( 0.00%)             0                    2 ( 0.00%) 1 ( 0.00%)       0            0          1 ( 0.03%) .          .                        << "TREINO | " << treino.size() << " imagens\n";
+        4,238 ( 0.00%)         1,372 ( 0.00%)         677 ( 0.00%) 64 ( 0.04%)     127 ( 0.01%)  28 ( 0.09%) 54 ( 1.64%) 5 ( 0.06%) .           => ???:0x000000000010b5e0 (2x)
+           44 ( 0.00%)             .                    .          .                .            .          .          .          .                   for (int epoca = 0; epoca < epocas; epoca += 5) {
+           44 ( 0.00%)             0                   11 ( 0.00%) .                .            .          .          .          .                       cout << "Epoca " << setw(2) << epoca + 1 << "/" << epocas
+        8,702 ( 0.00%)         2,467 ( 0.00%)       1,292 ( 0.00%) 34 ( 0.02%)      45 ( 0.00%)   5 ( 0.02%) 24 ( 0.73%) 4 ( 0.05%) .           => ???:0x000000000010b7a0 (11x)
+           44 ( 0.00%)             0                   11 ( 0.00%) .                .            .          .          .          .                            << " | perda media " << perdas[epoca] << "\n";
+        4,554 ( 0.00%)         1,210 ( 0.00%)         726 ( 0.00%) 0                0            1 ( 0.00%) .          .          .           => ???:0x000000000010b7a0 (11x)
+            .                      .                    .          .                .            .          .          .          .                   }
+            6 ( 0.00%)             0                    2 ( 0.00%) 1 ( 0.00%)       0            0          1 ( 0.03%) .          .                   cout << "Tempo de treino " << tempo.count() << " s\n";
+          533 ( 0.00%)           160 ( 0.00%)          96 ( 0.00%) 2 ( 0.00%)       .            .          .          .          .           => ???:0x000000000010b5e0 (2x)
+            6 ( 0.00%)             4 ( 0.00%)           1 ( 0.00%) .                .            .          .          .          .                   Barenn::avaliar(l1, l2, l3, teste);
+    7,951,525 ( 0.07%)     2,528,903 ( 0.10%)      45,992 ( 0.01%) 668 ( 0.47%)   3,652 ( 0.38%) 497 ( 1.52%) 275 ( 8.37%) 25 ( 0.32%) 336 ( 1.16%)  => barenn.cpp:Barenn::avaliar(Barenn::DenseLayer const&, Barenn::DenseLayer const&, Barenn::DenseLayer const&, std::vector<Barenn::Amostra, std::allocator<Barenn::Amostra> > const&) (1x)
+            4 ( 0.00%)             1 ( 0.00%)           2 ( 0.00%) 0                1 ( 0.00%)   .          .          .          .               } catch (const exception& erro) {
+    1,390,091 ( 0.01%)       412,848 ( 0.02%)     213,406 ( 0.03%) 12 ( 0.01%)   9,894 ( 1.03%)   7 ( 0.02%) 7 ( 0.21%) .          .           => /usr/include/c++/13/bits/stl_vector.h:std::vector<Barenn::Amostra, std::allocator<Barenn::Amostra> >::~vector() (2x)
+            .                      .                    .          .                .            .          .          .          .                   cerr << "Erro: " << erro.what() << "\n";
+            .                      .                    .          .                .            .          .          .          .                   return 1;
+            .                      .                    .          .                .            .          .          .          .               }
+           13 ( 0.00%)             9 ( 0.00%)           0          2 ( 0.00%)       2 ( 0.00%)   0          1 ( 0.03%) .          .           }
+
+--------------------------------------------------------------------------------
+Ir                      Dr                     Dw                   I1mr        D1mr             D1mw         ILmr        DLmr       DLmw
+--------------------------------------------------------------------------------
+10,359,836,025 (95.32%) 2,450,822,076 (94.38%) 697,896,666 (89.46%) 79 ( 0.06%) 935,620 (96.98%) 319 ( 0.98%) 71 ( 2.16%) 1 ( 0.01%) 3 ( 0.01%)  events annotated
