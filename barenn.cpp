@@ -264,11 +264,13 @@ int main(int argc, char** argv) {
     const string arquivo_teste = argc == 3 ? argv[2] : "optdigits.tes";
 
     try {
+        const auto inicio_leitura = chrono::steady_clock::now();
         const auto treino = Barenn::ler_dados(arquivo_treino);
         const auto teste = Barenn::ler_dados(arquivo_teste);
         if (filesystem::equivalent(arquivo_treino, arquivo_teste)) {
             throw runtime_error("Use arquivos distintos para treino e teste.");
         }
+        const chrono::duration<double> tempo_leitura = chrono::steady_clock::now() - inicio_leitura;
 
         constexpr int epocas = 51;
         constexpr float taxa = 0.02f;
@@ -308,14 +310,18 @@ int main(int argc, char** argv) {
         const chrono::duration<double> tempo = chrono::steady_clock::now() - inicio;
 
         // Imprime as métricas e roda a avaliação após encerrar o cronômetro.
-        cout << fixed << setprecision(4)
-             << "TREINO | " << treino.size() << " imagens\n";
+        cout << fixed << setprecision(6)
+             << "Tempo de leitura " << tempo_leitura.count() << " s\n"
+             << setprecision(4) << "TREINO | " << treino.size() << " imagens\n";
         for (int epoca = 0; epoca < epocas; epoca += 5) {
             cout << "Epoca " << setw(2) << epoca + 1 << "/" << epocas
                  << " | perda media " << perdas[epoca] << "\n";
         }
         cout << "Tempo de treino " << tempo.count() << " s\n";
+        const auto inicio_avaliacao = chrono::steady_clock::now();
         Barenn::avaliar(l1, l2, l3, teste);
+        const chrono::duration<double> tempo_avaliacao = chrono::steady_clock::now() - inicio_avaliacao;
+        cout << "Tempo de avaliacao " << setprecision(6) << tempo_avaliacao.count() << " s\n";
     } catch (const exception& erro) {
         cerr << "Erro: " << erro.what() << "\n";
         return 1;

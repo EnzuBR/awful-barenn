@@ -12,7 +12,18 @@ O Barenn treina uma rede densa para classificar dígitos. Mantive a rede, as 51 
 
 Mediana ± desvio padrão amostral de nove rodadas alternadas, após um aquecimento por executável. Usei o mesmo i9-12900H, RTX 3070 Ti Laptop, Windows 11 e os arquivos completos `optdigits.tra` e `optdigits.tes`. O tempo de treino em CUDA inclui a preparação do device e as transferências. A fase de kernels é o intervalo medido por eventos CUDA. O tempo de ponta a ponta inclui leitura, treino e avaliação. [Medições por rodada](resultados/benchmark-windows.txt).
 
-A CPU otimizada treinou **1,77× mais rápido** que o legado. O CUDA final reduziu a fase de kernels em **1,95×** frente ao CUDA inicial e teve o menor tempo de ponta a ponta nesta máquina. O treino em si foi mais rápido na CPU otimizada. O SGD exige que uma amostra termine antes da próxima e o kernel usa um bloco por lançamento.
+A CPU otimizada treinou **1,77× mais rápido** que o legado. O CUDA final reduziu a fase de kernels em **1,95×** frente ao CUDA inicial. Na tabela acima, o menor tempo total foi do executável CUDA, que usou MSVC no host. A CPU usou MinGW. A comparação com o mesmo compilador está abaixo.
+
+## CPU e CUDA com o mesmo compilador
+
+Compilei os dois modos com NVCC 12.5.40 e MSVC 19.29 no host. Alterei apenas a macro `BARENN_CUDA`. Usei os mesmos dados e quatro threads na avaliação, com 15 rodadas alternadas e um aquecimento por modo.
+
+| Modo | Leitura (ms) | Treino (ms) | Avaliação (ms) | Ponta a ponta (ms) |
+| --- | ---: | ---: | ---: | ---: |
+| CPU | 167,95 ± 9,61 | 798,30 ± 49,08 | 1,14 ± 0,56 | 977,44 ± 57,08 |
+| CUDA | 176,41 ± 24,92 | 909,50 ± 53,93 | 1,30 ± 0,34 | 1.120,60 ± 62,58 |
+
+A diferença de leitura ficou dentro da dispersão. Com o host igual, a CPU teve menor mediana de treino e de ponta a ponta. O SGD usa os pesos atualizados na amostra anterior. Um único bloco fica ativo por lançamento, e as barreiras entre operações das camadas limitam o trabalho que a GPU consegue sobrepor. [Issue #13](https://github.com/EnzuBR/awful-barenn/issues/13) · [Tempos por rodada](resultados/mesmo-compilador-windows.txt).
 
 As cinco versões obtiveram **1.717/1.797 acertos (95,5%)** e perda de teste **0,0432**. A verificação binária em Ubuntu/WSL2, com GCC 13.3 e NVCC 12.5, comparou parâmetros finais, perdas por época e escores de teste. Os resultados coincidiram bit a bit.
 
