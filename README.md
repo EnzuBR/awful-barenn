@@ -1,3 +1,57 @@
+# APS 2 · Barenn
+
+O Barenn treina uma rede densa para classificar dígitos. Mantive a rede, as 51 épocas e o SGD na ordem do arquivo. Otimizei o treino em CPU e a avaliação com OpenMP. Em CUDA, passei os pesos para memória compartilhada e ajustei o layout para reduzir conflitos de banco.
+
+| Versão | Treino (s) | Ponta a ponta (s) | Fase de kernels (s) | Issue |
+| --- | ---: | ---: | ---: | --- |
+| [Baseline legado](https://github.com/EnzuBR/awful-barenn/tree/v0.1-baseline) | 0,7247 ± 0,0129 | 1,5527 ± 0,0279 | — | [#1](https://github.com/EnzuBR/awful-barenn/issues/1) |
+| [CPU otimizada](https://github.com/EnzuBR/awful-barenn/tree/v0.2-cpu) | 0,4100 ± 0,0167 | 1,2408 ± 0,0413 | — | [#2](https://github.com/EnzuBR/awful-barenn/issues/2) |
+| [CUDA inicial](https://github.com/EnzuBR/awful-barenn/tree/v0.3-cuda) | 1,5481 ± 0,0525 | 1,7399 ± 0,0593 | 1,4576 ± 0,0437 | [#5](https://github.com/EnzuBR/awful-barenn/issues/5) |
+| [CUDA com memória compartilhada](https://github.com/EnzuBR/awful-barenn/tree/v0.4-cuda-shared) | 1,0397 ± 0,0393 | 1,2476 ± 0,0360 | 0,9671 ± 0,0330 | [#7](https://github.com/EnzuBR/awful-barenn/issues/7) |
+| [CUDA otimizado com padding](https://github.com/EnzuBR/awful-barenn/tree/v0.5-cuda-padding) | 0,8196 ± 0,0038 | 1,0113 ± 0,0097 | 0,7463 ± 0,0001 | [#8](https://github.com/EnzuBR/awful-barenn/issues/8) |
+
+Mediana ± desvio padrão amostral de nove rodadas alternadas, após um aquecimento por executável. Usei o mesmo i9-12900H, RTX 3070 Ti Laptop, Windows 11 e os arquivos completos `optdigits.tra` e `optdigits.tes`. O tempo de treino em CUDA inclui a preparação do device e as transferências. A fase de kernels é o intervalo medido por eventos CUDA. O tempo de ponta a ponta inclui leitura, treino e avaliação. [Medições por rodada](resultados/benchmark-windows.txt).
+
+A CPU otimizada treinou **1,77× mais rápido** que o legado. O CUDA final reduziu a fase de kernels em **1,95×** frente ao CUDA inicial e teve o menor tempo de ponta a ponta nesta máquina. O treino em si foi mais rápido na CPU otimizada. O SGD exige que uma amostra termine antes da próxima e o kernel usa um bloco por lançamento.
+
+As cinco versões obtiveram **1.717/1.797 acertos (95,5%)** e perda de teste **0,0432**. A verificação binária em Ubuntu/WSL2, com GCC 13.3 e NVCC 12.5, comparou parâmetros finais, perdas por época e escores de teste. Os resultados coincidiram bit a bit.
+
+## Como executar
+
+Requer C++17. Para CUDA, use também o Toolkit e uma GPU NVIDIA. Os comandos usam os dados da raiz do repositório. O executável aceita dois caminhos opcionais, de treino e de teste, nessa ordem.
+
+No Linux ou WSL2, com GCC:
+
+```bash
+g++ -std=c++17 -O2 -g -Wall -Wextra -ffp-contract=off -fopenmp barenn.cpp -o barenn-cpu
+OMP_NUM_THREADS=4 ./barenn-cpu
+
+nvcc -std=c++17 -arch=sm_86 -O2 -lineinfo --fmad=false \
+  -Xcompiler=-ffp-contract=off,-fopenmp -DBARENN_CUDA -x cu barenn.cpp -o barenn-cuda
+OMP_NUM_THREADS=4 ./barenn-cuda
+```
+
+Ajuste `sm_86` à sua GPU. Para CPU sem OpenMP, omita `-fopenmp`. No Windows, os builds da tabela usaram MinGW GCC 16.2 para CPU e NVCC 12.5.40 com MSVC 19.29 para CUDA. Acrescente `-static` ao comando MinGW e use `-Xcompiler="/utf-8 /fp:precise /openmp"` no NVCC em um prompt de desenvolvimento do Visual Studio. O legado usa o mesmo comando GCC sem `-fopenmp`.
+
+## Como conferir os resultados
+
+Compile cada tag em sua pasta, com os comandos acima, e use o script da `main` com os caminhos dos executáveis. Em Linux/WSL2:
+
+```bash
+OMP_NUM_THREADS=4 python3 tools/benchmark.py \
+  ./barenn-legado ./barenn-cpu ./barenn-global ./barenn-shared ./barenn-cuda --repeticoes 9
+python3 tools/verificar.py ./barenn-legado ./barenn-cuda --atol 0
+OMP_NUM_THREADS=4 python3 tools/verificar_binario.py --arch sm_86
+git show v0.2-cpu:barenn.cpp > /tmp/barenn-v0.2.cpp
+python3 tools/bench_openmp.py /tmp/barenn-v0.2.cpp
+```
+
+O primeiro verificador usa o conjunto completo e um caso analítico com imagens zeradas. O verificador binário compila as cinco tags em uma pasta temporária e compara pesos, vieses, perdas e escores. O microbenchmark OpenMP mede 100 passagens pelo conjunto de teste com uma equipe por processo. [Rodadas do OpenMP](resultados/openmp-windows.txt).
+
+As Issues registram a coleta e a análise dos perfis. [Callgrind](resultados/callgrind.csv) · [Nsight Systems](resultados/nsight-systems.csv) · [Nsight Compute](resultados/nsight-compute.csv).
+
+## Enunciado original
+
 # Projeto Barenn: O Legado, a Sobrevivência e o Salto para a GPU
 
 Era uma segunda-feira aparentemente tranquila quando a demanda chegou à sua mesa. A liderança técnica se aproximou com um sorriso contido e soltou aquela frase clássica que faz qualquer engenheiro gelar por dentro:

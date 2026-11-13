@@ -1,0 +1,10 @@
+Compilação g++ -std=c++17 -O2 -g -fopenmp -static
+100 passagens por execução, 1 aquecimento e 8 rodadas por equipe.
+Acuracia 95.5% | 1717 acertos em 1797 imagens
+1 thread(s), ms por passagem
+  1.7598, 1.9448, 1.6268, 1.6391, 1.6875, 1.9976, 1.5592, 1.8249
+  mediana 1.7236 | DP 0.1570
+4 thread(s), ms por passagem
+  0.8759, 0.8264, 0.5618, 0.6393, 0.9418, 0.6493, 0.6364, 0.5594
+  mediana 0.6443 | DP 0.1481
+Speedup 2.68x | eficiência 66.9%
