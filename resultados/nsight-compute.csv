@@ -1,0 +1,22 @@
+tag,metrica,unidade,valor
+v0.3-cuda,Theoretical Occupancy,%,66.67
+v0.3-cuda,Achieved Occupancy,%,4.17
+v0.3-cuda,l1tex__data_bank_conflicts_pipe_lsu_mem_shared_op_ld.sum,,0
+v0.3-cuda,dram__bytes.sum,byte,96768
+v0.3-cuda,lts__t_bytes.sum,byte,2136192
+v0.3-cuda,sm__cycles_active.avg.pct_of_peak_sustained_elapsed,%,2.17
+v0.3-cuda,smsp__warps_eligible.avg.per_cycle_active,warp,0.11
+v0.4-cuda-shared,Theoretical Occupancy,%,33.33
+v0.4-cuda-shared,Achieved Occupancy,%,4.17
+v0.4-cuda-shared,l1tex__data_bank_conflicts_pipe_lsu_mem_shared_op_ld.sum,,73216
+v0.4-cuda-shared,dram__bytes.sum,byte,59136
+v0.4-cuda-shared,lts__t_bytes.sum,byte,321888
+v0.4-cuda-shared,sm__cycles_active.avg.pct_of_peak_sustained_elapsed,%,2.17
+v0.4-cuda-shared,smsp__warps_eligible.avg.per_cycle_active,warp,0.13
+v0.5-cuda-padding,Theoretical Occupancy,%,29.17
+v0.5-cuda-padding,Achieved Occupancy,%,4.17
+v0.5-cuda-padding,l1tex__data_bank_conflicts_pipe_lsu_mem_shared_op_ld.sum,,645
+v0.5-cuda-padding,dram__bytes.sum,byte,60928
+v0.5-cuda-padding,lts__t_bytes.sum,byte,298112
+v0.5-cuda-padding,sm__cycles_active.avg.pct_of_peak_sustained_elapsed,%,2.17
+v0.5-cuda-padding,smsp__warps_eligible.avg.per_cycle_active,warp,0.18
