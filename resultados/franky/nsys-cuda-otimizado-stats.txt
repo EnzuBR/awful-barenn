@@ -1,0 +1,30 @@
+$ nsys stats --report cuda_gpu_kern_sum\,cuda_gpu_mem_time_sum\,cuda_gpu_mem_size_sum /caminho/do/experimento/validacao/nsys-cuda-otimizado.nsys-rep
+Generating SQLite file /caminho/do/experimento/validacao/nsys-cuda-otimizado.sqlite from /caminho/do/experimento/validacao/nsys-cuda-otimizado.nsys-rep
+Processing [/caminho/do/experimento/validacao/nsys-cuda-otimizado.sqlite] with [/opt/ohpc/pub/spack/opt/spack/linux-skylake/cuda-12.8.1-hk7c4l6fpeucmtbivmr7kn73dnkarzyt/nsight-systems-2024.6.2/host-linux-x64/reports/cuda_gpu_kern_sum.py]...
+
+ ** CUDA GPU Kernel Summary (cuda_gpu_kern_sum):
+
+ Time (%)  Total Time (ns)  Instances  Avg (ns)  Med (ns)  Min (ns)  Max (ns)  StdDev (ns)                                                  Name
+ --------  ---------------  ---------  --------  --------  --------  --------  -----------  ----------------------------------------------------------------------------------------------------
+    100.0        662400904       1530  432941.8  413881.0    359866    620406      50382.7  Barenn::gpu::treinar_lote(Barenn::gpu::Modelo<(int)0> *, const Barenn::gpu::Exemplo *, float *, int…
+
+Processing [/caminho/do/experimento/validacao/nsys-cuda-otimizado.sqlite] with [/opt/ohpc/pub/spack/opt/spack/linux-skylake/cuda-12.8.1-hk7c4l6fpeucmtbivmr7kn73dnkarzyt/nsight-systems-2024.6.2/host-linux-x64/reports/cuda_gpu_mem_time_sum.py]...
+
+ ** CUDA GPU MemOps Summary (by Time) (cuda_gpu_mem_time_sum):
+
+ Time (%)  Total Time (ns)  Count  Avg (ns)  Med (ns)  Min (ns)  Max (ns)  StdDev (ns)           Operation
+ --------  ---------------  -----  --------  --------  --------  --------  -----------  ----------------------------
+     57.0            82207      2   41103.5   41103.5      1600     80607      55866.4  [CUDA memcpy Host-to-Device]
+     43.0            62047      2   31023.5   31023.5      1632     60415      41565.9  [CUDA memcpy Device-to-Host]
+
+Processing [/caminho/do/experimento/validacao/nsys-cuda-otimizado.sqlite] with [/opt/ohpc/pub/spack/opt/spack/linux-skylake/cuda-12.8.1-hk7c4l6fpeucmtbivmr7kn73dnkarzyt/nsight-systems-2024.6.2/host-linux-x64/reports/cuda_gpu_mem_size_sum.py]...
+
+ ** CUDA GPU MemOps Summary (by Size) (cuda_gpu_mem_size_sum):
+
+ Total (MB)  Count  Avg (MB)  Med (MB)  Min (MB)  Max (MB)  StdDev (MB)           Operation
+ ----------  -----  --------  --------  --------  --------  -----------  ----------------------------
+      1.005      2     0.503     0.503     0.011     0.994        0.695  [CUDA memcpy Host-to-Device]
+      0.791      2     0.396     0.396     0.011     0.780        0.544  [CUDA memcpy Device-to-Host]
+
+
+Código de saída: 0

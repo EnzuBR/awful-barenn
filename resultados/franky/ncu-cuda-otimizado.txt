@@ -1,0 +1,42 @@
+$ ncu --target-processes all --launch-skip 10 --launch-count 1 --section Occupancy --metrics l1tex__data_bank_conflicts_pipe_lsu_mem_shared_op_ld.sum\,dram__bytes.sum\,lts__t_bytes.sum\,sm__warps_active.avg.pct_of_peak_sustained_active\,sm__cycles_active.avg.pct_of_peak_sustained_elapsed\,smsp__warps_eligible.avg.per_cycle_active --page details --csv --export /caminho/do/experimento/validacao/ncu-cuda-otimizado /caminho/do/experimento/validacao/v0.5-cuda-padding/barenn-cuda-otimizado /caminho/do/experimento/validacao/v0.1-baseline/optdigits.tra /caminho/do/experimento/validacao/v0.1-baseline/optdigits.tes
+==PROF== Connected to process 1244282 (/caminho/do/experimento/validacao/v0.5-cuda-padding/barenn-cuda-otimizado)
+==ERROR== ERR_NVGPUCTRPERM - The user does not have permission to access NVIDIA GPU Performance Counters on the target device 0. For instructions on enabling permissions and to get more information see https://developer.nvidia.com/ERR_NVGPUCTRPERM
+CUDA H2D 0.000165 s
+CUDA kernels 0.660685 s
+CUDA D2H 0.000124 s
+TREINO | 3823 imagens
+Epoca  1/51 | perda media 0.4129
+Epoca  6/51 | perda media 0.0442
+Epoca 11/51 | perda media 0.0312
+Epoca 16/51 | perda media 0.0261
+Epoca 21/51 | perda media 0.0227
+Epoca 26/51 | perda media 0.0204
+Epoca 31/51 | perda media 0.0184
+Epoca 36/51 | perda media 0.0169
+Epoca 41/51 | perda media 0.0155
+Epoca 46/51 | perda media 0.0145
+Epoca 51/51 | perda media 0.0135
+Tempo de treino 2.4865 s
+
+AVALIACAO FINAL
+Acuracia 95.5% | 1717 acertos em 1797 imagens
+Perda media 0.0432
+Tempo de inferencia 0.000485 s
+
+ALGUMAS INFERENCIAS
+Esperado  Previsto
+       0         0
+       1         1
+       2         8
+       3         3
+       5         9
+       7         9
+
+CONFUSOES MAIS FREQUENTES
+Esperado  Previsto  Ocorrencias
+       7         9            9
+       8         1            6
+       3         2            5
+==PROF== Disconnected from process 1244282
+
+Código de saída: 1
