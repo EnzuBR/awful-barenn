@@ -23,6 +23,7 @@ A CPU otimizada treinou **1,77× mais rápido** que o legado. O CUDA final reduz
 | [`v1.2-inferencia-openmp`](https://github.com/EnzuBR/awful-barenn/tree/v1.2-inferencia-openmp) | Medição com uma e quatro threads no mesmo binário e ensaio de leitura paralela. | [#14](https://github.com/EnzuBR/awful-barenn/issues/14) |
 | [`v1.3-aps2`](https://github.com/EnzuBR/awful-barenn/tree/v1.3-aps2) | Exportações dos profilers e testes das tags em clone novo. | [#15](https://github.com/EnzuBR/awful-barenn/issues/15) |
 | [`v1.4-reproducao`](https://github.com/EnzuBR/awful-barenn/tree/v1.4-reproducao) | Registro do teste da v1.3 e patch do ensaio de leitura. | [#19](https://github.com/EnzuBR/awful-barenn/issues/19) |
+| [`v1.5-franky`](https://github.com/EnzuBR/awful-barenn/tree/v1.5-franky) | Validação das quatro versões em um nó do Franky. | [#21](https://github.com/EnzuBR/awful-barenn/issues/21) |
 
 ## CPU e CUDA com o mesmo compilador
 
@@ -89,6 +90,8 @@ Também compilei e rodei a `v1.3-aps2` em CPU e CUDA a partir de um clone novo. 
 O microbenchmark OpenMP mede 100 passagens pelo conjunto de teste com uma equipe por processo. [Rodadas do OpenMP](resultados/openmp-windows.txt).
 
 Os perfis trazem os comandos, as versões das ferramentas e os arquivos de saída. [Como repetir as coletas](resultados/perfis/README.md) · [Issue #15](https://github.com/EnzuBR/awful-barenn/issues/15).
+
+No Franky, as quatro versões produziram a mesma saída do legado. A CPU otimizada ganhou 1,51× no treino e o CUDA final ganhou 1,85× na fase de kernels frente ao inicial. [Resultados, logs e script do job](resultados/franky/README.md).
 
 ## Enunciado original
 
